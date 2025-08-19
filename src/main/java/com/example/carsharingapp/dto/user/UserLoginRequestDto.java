@@ -1,4 +1,4 @@
-package com.example.carsharingapp.dto;
+package com.example.carsharingapp.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

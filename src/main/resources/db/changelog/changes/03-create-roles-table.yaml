@@ -19,6 +19,10 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
+  - changeSet:
+      id: insert-roles
+      author: Mykola
+      changes:
         - insert:
             tableName: roles
             columns:
@@ -28,7 +32,6 @@ databaseChangeLog:
               - column:
                   name: name
                   value: ROLE_CUSTOMER
-
         - insert:
             tableName: roles
             columns:

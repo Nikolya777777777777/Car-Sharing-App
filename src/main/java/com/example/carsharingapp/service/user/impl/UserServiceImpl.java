@@ -1,10 +1,10 @@
 package com.example.carsharingapp.service.user.impl;
 
-import com.example.carsharingapp.dto.UserRegistrationRequestDto;
-import com.example.carsharingapp.dto.UserResponseDto;
+import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
+import com.example.carsharingapp.dto.user.UserResponseDto;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.exception.RegistrationException;
-import com.example.carsharingapp.mapper.UserMapper;
+import com.example.carsharingapp.mapper.user.UserMapper;
 import com.example.carsharingapp.model.Role;
 import com.example.carsharingapp.model.User;
 import com.example.carsharingapp.model.enums.RoleName;

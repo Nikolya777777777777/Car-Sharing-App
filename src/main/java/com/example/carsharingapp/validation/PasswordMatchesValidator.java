@@ -1,6 +1,6 @@
 package com.example.carsharingapp.validation;
 
-import com.example.carsharingapp.dto.UserRegistrationRequestDto;
+import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
