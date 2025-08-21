@@ -1,5 +1,10 @@
 package com.example.carsharingapp.repository.car;
 
+import static com.example.carsharingapp.repository.car.spec.BrandSpecificationProvider.BRAND_KEY;
+import static com.example.carsharingapp.repository.car.spec.DailyFeeSpecificationProvider.DAILY_FEE_KEY;
+import static com.example.carsharingapp.repository.car.spec.ModelSpecificationProvider.MODEL_KEY;
+import static com.example.carsharingapp.repository.car.spec.TypeSpecificationProvider.TYPE_KEY;
+
 import com.example.carsharingapp.dto.car.CarSearchParamsDto;
 import com.example.carsharingapp.model.Car;
 import com.example.carsharingapp.repository.SpecificationBuilder;
@@ -15,21 +20,32 @@ public class CarSpecificationBuilder implements SpecificationBuilder<Car> {
 
     @Override
     public Specification<Car> build(CarSearchParamsDto searchParameters) {
-        Specification<Car> spec = Specification.where(null);
+        Specification<Car> spec = null;
         if (searchParameters.models() != null && searchParameters.models().length > 0) {
-            spec = spec.and(carSpecificationProviderManager
-                    .getSpecificationProvider(MODELS_KEY)
-                    .getSpecification(searchParameters.authors()));
+            Specification<Car> modelSpec = carSpecificationProviderManager
+                    .getSpecificationProvider(MODEL_KEY)
+                    .getSpecification(searchParameters.models());
+            spec = spec == null ? modelSpec : spec.and(modelSpec);
         }
-        if (searchParameters.isbns() != null && searchParameters.isbns().length > 0) {
-            spec = spec.and(carSpecificationProviderManager
-                    .getSpecificationProvider(ISBN_KEY)
-                    .getSpecification(searchParameters.isbns()));
+        if (searchParameters.brands() != null && searchParameters.brands().length > 0) {
+            Specification<Car> brandSpec = carSpecificationProviderManager
+                    .getSpecificationProvider(BRAND_KEY)
+                    .getSpecification(searchParameters.brands());
+            spec = spec == null ? brandSpec : spec.and(brandSpec);
         }
-        if (searchParameters.titles() != null && searchParameters.titles().length > 0) {
-            spec = spec.and(carSpecificationProviderManager
-                    .getSpecificationProvider(TITLE_KEY)
-                    .getSpecification(searchParameters.titles()));
+        if (searchParameters.type() != null) {
+            Specification<Car> typeSpecification = carSpecificationProviderManager
+                    .getSpecificationProvider(TYPE_KEY)
+                    .getSpecification(new String[]{String.valueOf(searchParameters.type())});
+            spec = spec == null ? typeSpecification : spec.and(typeSpecification);
+
+        }
+
+        if (searchParameters.dailyFee() != null) {
+            Specification<Car> dailyFeeSpecification = carSpecificationProviderManager
+                    .getSpecificationProvider(DAILY_FEE_KEY)
+                    .getSpecification(new String[]{String.valueOf(searchParameters.dailyFee())});
+            spec = spec == null ? dailyFeeSpecification : spec.and(dailyFeeSpecification);
         }
         return spec;
     }

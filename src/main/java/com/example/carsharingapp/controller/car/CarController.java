@@ -49,7 +49,7 @@ public class CarController {
         return carService.getAllCars(pageable);
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public Page<CarResponseDto> getCarByDetails(CarSearchParamsDto searchParamsDto, Pageable pageable) {
         return carService.searchCarsByParams(searchParamsDto, pageable);
     }

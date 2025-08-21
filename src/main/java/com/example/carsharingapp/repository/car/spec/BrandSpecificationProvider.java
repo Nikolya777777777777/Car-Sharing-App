@@ -6,16 +6,16 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.Arrays;
 
 public class BrandSpecificationProvider implements SpecificationProvider<Car> {
-    public static final String DAILY_FEE_KEY = "brand";
+    public static final String BRAND_KEY = "brand";
 
     @Override
     public String getKey() {
-        return DAILY_FEE_KEY;
+        return BRAND_KEY;
     }
 
     @Override
     public Specification<Car> getSpecification(String[] params) {
-        return ((root, query, criteriaBuilder) -> root.get(DAILY_FEE_KEY)
+        return ((root, query, criteriaBuilder) -> root.get(BRAND_KEY)
                 .in(Arrays.stream(params).toArray()));
     }
 }

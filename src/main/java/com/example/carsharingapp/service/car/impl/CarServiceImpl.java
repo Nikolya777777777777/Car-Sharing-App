@@ -34,6 +34,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public Page<CarResponseDto> searchCarsByParams(CarSearchParamsDto searchParamsDto, Pageable pageable) {
         Specification<Car> carSpecification = carSpecificationBuilder.build(searchParamsDto);
-        return null;
+        Page<Car> carPage = carRepository.findAll(carSpecification, pageable);
+    return carPage.map(carMapper::toResponseDto);
     }
 }
