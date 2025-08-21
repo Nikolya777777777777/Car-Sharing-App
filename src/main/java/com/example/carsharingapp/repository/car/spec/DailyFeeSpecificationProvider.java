@@ -4,7 +4,6 @@ import com.example.carsharingapp.model.Car;
 import com.example.carsharingapp.repository.SpecificationProvider;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 
 @Component

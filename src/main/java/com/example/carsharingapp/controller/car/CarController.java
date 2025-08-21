@@ -36,21 +36,21 @@ public class CarController {
     public CarResponseDto create(@Valid @RequestBody CarRequestDto requestDto) {
         return carService.create(requestDto);
     }
-//
-//    @Operation(summary = "Get all available cars", description = "Returns pages of all cars")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Car was found"),
-//            @ApiResponse(responseCode = "404", description = "Car was not found")
-//    })
-//
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping
-//    public Page<CarResponseDto> getAllCars(Pageable pageable) {
-//        return carService.getAllCars(pageable);
-//    }
 
-//    @GetMapping
-//    public Page<CarResponseDto> getCarByDetails(CarSearchParamsDto searchParamsDto, Pageable pageable) {
-//        return carService.searchCarsByParams(searchParamsDto, pageable);
-//    }
+   @Operation(summary = "Get all available cars", description = "Returns pages of all cars")
+   @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Car was found"),
+            @ApiResponse(responseCode = "404", description = "Car was not found")
+    })
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public Page<CarResponseDto> getAllCars(Pageable pageable) {
+        return carService.getAllCars(pageable);
+    }
+
+    @GetMapping
+    public Page<CarResponseDto> getCarByDetails(CarSearchParamsDto searchParamsDto, Pageable pageable) {
+        return carService.searchCarsByParams(searchParamsDto, pageable);
+    }
 }
