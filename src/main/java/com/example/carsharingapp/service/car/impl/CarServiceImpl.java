@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
-    private final CarSpecificationBuilder carSpecificationBuilder;
+    //private final CarSpecificationBuilder carSpecificationBuilder;
 
     @Override
     public CarResponseDto create(CarRequestDto requestDto) {
@@ -30,9 +30,9 @@ public class CarServiceImpl implements CarService {
         return carRepository.findAll(pageable).map(carMapper::toResponseDto);
     }
 
-    @Override
-    public Page<CarResponseDto> searchCarsByParams(CarSearchParamsDto searchParamsDto, Pageable pageable) {
-        Specification<Car> specification = carSpecificationBuilder.build(searchParamsDto);
-        return carRepository.searchCarByParams(searchParamsDto, pageable);
-    }
+//    @Override
+//    public Page<CarResponseDto> searchCarsByParams(CarSearchParamsDto searchParamsDto, Pageable pageable) {
+//        //Specification<Car> specification = carSpecificationBuilder.build(searchParamsDto);
+//        return carRepository.searchCarByParams(searchParamsDto, pageable);
+//    }
 }

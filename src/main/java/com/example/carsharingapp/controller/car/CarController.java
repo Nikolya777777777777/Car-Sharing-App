@@ -15,10 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/cars")
@@ -33,25 +30,27 @@ public class CarController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public CarResponseDto create(@Valid CarRequestDto requestDto) {
+    @PostMapping
+    public CarResponseDto create(@Valid @RequestBody CarRequestDto requestDto) {
         return carService.create(requestDto);
     }
+//
+//    @Operation(summary = "Get all available cars", description = "Returns pages of all cars")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Car was found"),
+//            @ApiResponse(responseCode = "404", description = "Car was not found")
+//    })
+//
+//    @ResponseStatus(HttpStatus.OK)
+//    @GetMapping
+//    public Page<CarResponseDto> getAllCars(Pageable pageable) {
+//        return carService.getAllCars(pageable);
+//    }
 
-    @Operation(summary = "Get all available cars", description = "Returns pages of all cars")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Car was found"),
-            @ApiResponse(responseCode = "404", description = "Car was not found")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public Page<CarResponseDto> getAllCars(Pageable pageable) {
-        return carService.getAllCars(pageable);
-    }
-
-    @GetMapping
-    public Page<CarResponseDto> getCarByDetails(CarSearchParamsDto searchParamsDto, Pageable pageable) {
-        return carService.searchCarsByParams(searchParamsDto, pageable);
-    }
+//    @GetMapping
+//    public Page<CarResponseDto> getCarByDetails(CarSearchParamsDto searchParamsDto, Pageable pageable) {
+//        return carService.searchCarsByParams(searchParamsDto, pageable);
+//    }
 }
