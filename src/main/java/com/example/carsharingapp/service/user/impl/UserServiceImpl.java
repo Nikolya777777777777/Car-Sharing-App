@@ -1,5 +1,7 @@
 package com.example.carsharingapp.service.user.impl;
 
+import com.example.carsharingapp.dto.user.UpdateRoleRequestDto;
+import com.example.carsharingapp.dto.user.UserLoginRequestDto;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
 import com.example.carsharingapp.dto.user.UserResponseDto;
 import com.example.carsharingapp.exception.EntityNotFoundException;
@@ -42,5 +44,34 @@ public class UserServiceImpl implements UserService {
         userToSave.setRoles(Set.of(userRole));
         userRepository.save(userToSave);
         return userMapper.modelToResponseDto(userToSave);
+    }
+
+    @Override
+    public UserResponseDto updateRoleForUser(Long id, UpdateRoleRequestDto requestDto) {
+        Role role = roleRepository.findByName(requestDto.role())
+                .orElseThrow(() -> new EntityNotFoundException("Role named: " + requestDto.role() + " was not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " +  id + " was not found"));
+        if (user.getRoles().contains(role)) {
+            return userMapper.modelToResponseDto(userRepository.save(user));
+        }
+        user.setRoles(Set.of(role));
+        return userMapper.modelToResponseDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserResponseDto getAllInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " + userId + " was not found"));
+        return userMapper.modelToResponseDto(user);
+    }
+
+    @Override
+    public UserResponseDto updateInformationAboutUser(Long userId, UserRegistrationRequestDto requestDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " + userId + " was not found"));
+        User updatedUser = userMapper.updateUser(user, requestDto);
+        updatedUser.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        return userMapper.modelToResponseDto(userRepository.save(updatedUser));
     }
 }

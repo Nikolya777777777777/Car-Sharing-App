@@ -8,7 +8,12 @@ import org.springframework.data.domain.Pageable;
 
 public interface CarService {
     CarResponseDto create(CarRequestDto requestDto);
+
     Page<CarResponseDto> getAllCars(Pageable pageable);
 
     Page<CarResponseDto> searchCarsByParams(CarSearchParamsDto searchParamsDto, Pageable pageable);
+
+    CarResponseDto update(Long id, CarRequestDto requestDto);
+
+    void deleteById(Long id);
 }

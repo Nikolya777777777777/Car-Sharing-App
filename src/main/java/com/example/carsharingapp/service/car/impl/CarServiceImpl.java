@@ -3,6 +3,7 @@ package com.example.carsharingapp.service.car.impl;
 import com.example.carsharingapp.dto.car.CarRequestDto;
 import com.example.carsharingapp.dto.car.CarResponseDto;
 import com.example.carsharingapp.dto.car.CarSearchParamsDto;
+import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.car.CarMapper;
 import com.example.carsharingapp.model.Car;
 import com.example.carsharingapp.repository.car.CarRepository;
@@ -36,5 +37,20 @@ public class CarServiceImpl implements CarService {
         Specification<Car> carSpecification = carSpecificationBuilder.build(searchParamsDto);
         Page<Car> carPage = carRepository.findAll(carSpecification, pageable);
     return carPage.map(carMapper::toResponseDto);
+    }
+
+    @Override
+    public CarResponseDto update(Long id, CarRequestDto requestDto) {
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car was not found with id: " + id));
+        Car updatedCar = carMapper.updateCar(car, requestDto);
+        return carMapper.toResponseDto(carRepository.save(updatedCar));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car was not found with id: " + id));
+        carRepository.deleteById(id);
     }
 }
