@@ -6,7 +6,7 @@ import static com.example.carsharingapp.repository.car.spec.ModelSpecificationPr
 import static com.example.carsharingapp.repository.car.spec.TypeSpecificationProvider.TYPE_KEY;
 
 import com.example.carsharingapp.dto.car.CarSearchParamsDto;
-import com.example.carsharingapp.model.Car;
+import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.SpecificationBuilder;
 import com.example.carsharingapp.repository.SpecificationProviderManager;
 import lombok.RequiredArgsConstructor;

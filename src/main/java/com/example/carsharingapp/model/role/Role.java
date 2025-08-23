@@ -1,4 +1,4 @@
-package com.example.carsharingapp.model;
+package com.example.carsharingapp.model.role;
 
 import com.example.carsharingapp.model.enums.RoleName;
 import jakarta.persistence.Column;

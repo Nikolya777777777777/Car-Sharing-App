@@ -5,7 +5,7 @@ import com.example.carsharingapp.dto.car.CarResponseDto;
 import com.example.carsharingapp.dto.car.CarSearchParamsDto;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.car.CarMapper;
-import com.example.carsharingapp.model.Car;
+import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.car.CarRepository;
 import com.example.carsharingapp.repository.car.CarSpecificationBuilder;
 import com.example.carsharingapp.service.car.CarService;

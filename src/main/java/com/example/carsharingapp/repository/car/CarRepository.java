@@ -1,6 +1,6 @@
 package com.example.carsharingapp.repository.car;
 
-import com.example.carsharingapp.model.Car;
+import com.example.carsharingapp.model.car.Car;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
