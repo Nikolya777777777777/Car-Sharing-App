@@ -25,9 +25,7 @@ public class Rental {
     private LocalDateTime rentalDate;
     @Column(nullable = false)
     private LocalDateTime returnDate;
-    @Column(nullable = false)
     private LocalDateTime actualReturnDate;
-    @Column(nullable = false)
     @ManyToOne
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
