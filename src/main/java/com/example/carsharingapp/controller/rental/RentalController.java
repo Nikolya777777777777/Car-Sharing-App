@@ -1,10 +1,7 @@
 package com.example.carsharingapp.controller.rental;
 
 import com.example.carsharingapp.dto.car.CarResponseDto;
-import com.example.carsharingapp.dto.rental.RentalActiveOrNotActiveRequestDto;
-import com.example.carsharingapp.dto.rental.RentalRequestDto;
-import com.example.carsharingapp.dto.rental.RentalResponseDto;
-import com.example.carsharingapp.dto.rental.RentalReturnDto;
+import com.example.carsharingapp.dto.rental.*;
 import com.example.carsharingapp.model.user.User;
 import com.example.carsharingapp.service.rental.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,52 +26,52 @@ public class RentalController {
     @Operation(summary = "Create a new rental", description = "Creates a new rental")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Rental was created successfully",
-                    content = @Content(schema = @Schema(implementation = CarResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = RentalResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public RentalResponseDto create(@Valid @RequestBody RentalRequestDto requestDto) {
+    public RentalResponseDtoWithoutActualReturnDate create(@Valid @RequestBody RentalRequestDto requestDto) {
         return rentalService.create(requestDto);
     }
 
     @Operation(summary = "Return a car", description = "Return a car and set actual actual return date")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Rental was returned successfully",
-                    content = @Content(schema = @Schema(implementation = CarResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = RentalResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/return")
-    public Page<RentalResponseDto> returnRental(@AuthenticationPrincipal User user, RentalReturnDto rentalReturnDto, Pageable pageable) {
+    public Page<RentalResponseDto> returnRental(@AuthenticationPrincipal User user, @Valid @RequestBody RentalReturnDto rentalReturnDto, Pageable pageable) {
         return rentalService.returnCar(user.getId(), rentalReturnDto, pageable);
     }
 
-    @Operation(summary = "return a car", description = "Return a car and set actual actual return date")
+    @Operation(summary = "Return all active or not active user's rentals", description = "Return all active or not active user's rentals")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Rental was returned successfully",
-                    content = @Content(schema = @Schema(implementation = CarResponseDto.class))),
+            @ApiResponse(responseCode = "201", description = "Rentals were returned successfully",
+                    content = @Content(schema = @Schema(implementation = RentalDeciderDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public Page<RentalResponseDto> getAllActiveOrNotActiveRentalsByUserId(@AuthenticationPrincipal User user, Pageable pageable, @RequestBody @Valid RentalActiveOrNotActiveRequestDto requestDto) {
+    public Page<RentalDeciderDto> getAllActiveOrNotActiveRentalsByUserId(@AuthenticationPrincipal User user, Pageable pageable, @RequestBody @Valid RentalActiveOrNotActiveRequestDto requestDto) {
         return rentalService.returnUserRentals(user.getId(), pageable, requestDto);
     }
 
-    @Operation(summary = "return a car", description = "Return a car and set actual actual return date")
+    @Operation(summary = "Return rental by user Id and rental id", description = "Return rental by user Id and rental id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Rental was returned successfully",
-                    content = @Content(schema = @Schema(implementation = CarResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = RentalResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public RentalResponseDto getRentalByUserIdAndRentalId(@AuthenticationPrincipal User user, Pageable pageable, @PathVariable Long rentalId) {
-       return rentalService.returnRentalByRentalIdAndUserId(user.getId(), rentalId, pageable);
+    public RentalDeciderDto getRentalByUserIdAndRentalId(@AuthenticationPrincipal User user, Pageable pageable, @PathVariable Long id) {
+       return rentalService.returnRentalByRentalIdAndUserId(user.getId(), id, pageable);
     }
 }

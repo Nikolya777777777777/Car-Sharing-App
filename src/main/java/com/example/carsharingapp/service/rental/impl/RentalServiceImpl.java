@@ -1,9 +1,6 @@
 package com.example.carsharingapp.service.rental.impl;
 
-import com.example.carsharingapp.dto.rental.RentalActiveOrNotActiveRequestDto;
-import com.example.carsharingapp.dto.rental.RentalRequestDto;
-import com.example.carsharingapp.dto.rental.RentalResponseDto;
-import com.example.carsharingapp.dto.rental.RentalReturnDto;
+import com.example.carsharingapp.dto.rental.*;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.rental.RentalMapper;
 import com.example.carsharingapp.model.car.Car;
@@ -17,7 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,13 +23,13 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     @Override
-    public RentalResponseDto create(RentalRequestDto requestDto) {
+    public RentalResponseDtoWithoutActualReturnDate create(RentalRequestDto requestDto) {
         Car car = carRepository.findById(requestDto.getCarId())
                 .orElseThrow(() -> new EntityNotFoundException("Car was not found with id: " + requestDto.getCarId()));
         car.setInventory(car.getInventory() - 1);
         carRepository.save(car);
         requestDto.setActualReturnDate(null);
-        return rentalMapper.toResponseDto(rentalRepository.save(rentalMapper.toModel(requestDto)));
+        return rentalMapper.toResponseDtoWithoutActualReturnDate(rentalRepository.save(rentalMapper.toModel(requestDto)));
     }
 
     @Override
@@ -51,6 +47,7 @@ public class RentalServiceImpl implements RentalService {
                 .toList();
 
         rentalsToReturn.forEach(r -> r.setActualReturnDate(LocalDateTime.now()));
+        rentalsToReturn.forEach(r -> r.getCar().setInventory(r.getCar().getInventory() + 1));
 
         List<Rental> saved = rentalRepository.saveAll(rentalsToReturn);
 
@@ -62,9 +59,9 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public Page<RentalResponseDto> returnUserRentals(Long userId, Pageable pageable, RentalActiveOrNotActiveRequestDto requestDto) {
-        List<Rental> rentals = new ArrayList<>();
-        if (requestDto.is_active()) {
+    public Page<RentalDeciderDto> returnUserRentals(Long userId, Pageable pageable, RentalActiveOrNotActiveRequestDto requestDto) {
+        List<Rental> rentals;
+        if (requestDto.isActive()) {
             rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(userId);
         } else {
             rentals = rentalRepository.findByUserIdAndActualReturnDateIsNotNull(userId);
@@ -74,17 +71,30 @@ public class RentalServiceImpl implements RentalService {
             throw new EntityNotFoundException("Any rentals were not found for userId: " + userId);
         }
 
-        List<RentalResponseDto> result = rentals.stream()
-                .map(rentalMapper::toResponseDto)
-                .toList();
+        if (requestDto.isActive()) {
+            List<RentalDeciderDto> result = rentals.stream()
+                    .map(rentalMapper::toResponseDtoWithoutActualReturnDate)
+                    .map(dto -> (RentalDeciderDto) dto)
+                    .toList();
+            return new PageImpl<>(result, pageable, result.size());
 
-        return new PageImpl<>(result, pageable, result.size());
+        } else {
+            List<RentalDeciderDto> result = rentals.stream()
+                    .map(rentalMapper::toResponseDto)
+                    .map(dto -> (RentalDeciderDto) dto)
+                    .toList();
+
+            return new PageImpl<>(result, pageable, result.size());
+        }
     }
 
     @Override
-    public RentalResponseDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId, Pageable pageable) {
+    public RentalDeciderDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId, Pageable pageable) {
         Rental rental = rentalRepository.findByUserIdAndRentalId(userId, rentalId)
                 .orElseThrow(() -> new EntityNotFoundException("Rental was not found with id: " + rentalId));
+        if (rental.getActualReturnDate() == null) {
+            return rentalMapper.toResponseDtoWithoutActualReturnDate(rental);
+        }
         return rentalMapper.toResponseDto(rental);
     }
 }

@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class RentalActiveOrNotActiveRequestDto {
     @NotNull
-    private boolean is_active;
+    private boolean active;
 }
