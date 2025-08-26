@@ -1,14 +1,13 @@
 package com.example.carsharingapp.service.user.impl;
 
 import com.example.carsharingapp.dto.user.UpdateRoleRequestDto;
-import com.example.carsharingapp.dto.user.UserLoginRequestDto;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
 import com.example.carsharingapp.dto.user.UserResponseDto;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.exception.RegistrationException;
 import com.example.carsharingapp.mapper.user.UserMapper;
-import com.example.carsharingapp.model.Role;
-import com.example.carsharingapp.model.User;
+import com.example.carsharingapp.model.role.Role;
+import com.example.carsharingapp.model.user.User;
 import com.example.carsharingapp.model.enums.RoleName;
 import com.example.carsharingapp.repository.role.RoleRepository;
 import com.example.carsharingapp.repository.user.UserRepository;
@@ -17,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
         if (user.getRoles().contains(role)) {
             return userMapper.modelToResponseDto(userRepository.save(user));
         }
-        user.setRoles(Set.of(role));
+        user.setRoles(new HashSet<>(Set.of(role)));
         return userMapper.modelToResponseDto(userRepository.save(user));
     }
 

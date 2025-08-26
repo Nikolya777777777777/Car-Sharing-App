@@ -1,7 +1,7 @@
 package com.example.carsharingapp.repository.car;
 
 import com.example.carsharingapp.exception.SpecificationProviderManagerException;
-import com.example.carsharingapp.model.Car;
+import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.SpecificationProvider;
 import com.example.carsharingapp.repository.SpecificationProviderManager;
 import lombok.RequiredArgsConstructor;

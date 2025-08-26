@@ -1,6 +1,6 @@
 package com.example.carsharingapp.repository.user;
 
-import com.example.carsharingapp.model.User;
+import com.example.carsharingapp.model.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;

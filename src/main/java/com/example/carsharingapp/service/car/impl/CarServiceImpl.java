@@ -5,7 +5,7 @@ import com.example.carsharingapp.dto.car.CarResponseDto;
 import com.example.carsharingapp.dto.car.CarSearchParamsDto;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.car.CarMapper;
-import com.example.carsharingapp.model.Car;
+import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.car.CarRepository;
 import com.example.carsharingapp.repository.car.CarSpecificationBuilder;
 import com.example.carsharingapp.service.car.CarService;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,10 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarResponseDto create(CarRequestDto requestDto) {
+        Optional<Car> car = carRepository.findByModel(requestDto.getModel());
+        if (car.isPresent()) {
+            requestDto.setInventory(car.get().getInventory() + requestDto.getInventory());
+        }
         return carMapper.toResponseDto(carRepository.save(carMapper.toModel(requestDto)));
     }
 
@@ -43,6 +48,10 @@ public class CarServiceImpl implements CarService {
     public CarResponseDto update(Long id, CarRequestDto requestDto) {
         Car car = carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Car was not found with id: " + id));
+        Optional<Car> carFromDb = carRepository.findByModel(requestDto.getModel());
+        if (carFromDb.isPresent()) {
+            requestDto.setInventory(carFromDb.get().getInventory() + requestDto.getInventory());
+        }
         Car updatedCar = carMapper.updateCar(car, requestDto);
         return carMapper.toResponseDto(carRepository.save(updatedCar));
     }

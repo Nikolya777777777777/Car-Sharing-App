@@ -3,7 +3,7 @@ package com.example.carsharingapp.mapper.user;
 import com.example.carsharingapp.config.MapperConfig;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
 import com.example.carsharingapp.dto.user.UserResponseDto;
-import com.example.carsharingapp.model.User;
+import com.example.carsharingapp.model.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

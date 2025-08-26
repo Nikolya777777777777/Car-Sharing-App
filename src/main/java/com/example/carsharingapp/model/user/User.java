@@ -1,5 +1,6 @@
-package com.example.carsharingapp.model;
+package com.example.carsharingapp.model.user;
 
+import com.example.carsharingapp.model.role.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
