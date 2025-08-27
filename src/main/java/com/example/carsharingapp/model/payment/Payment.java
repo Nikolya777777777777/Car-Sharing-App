@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "payments")
@@ -26,8 +27,14 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentType type;
     @Column(nullable = false)
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Rental rental;
+    @ManyToMany
+    private List<Rental> rental;
+    @Column(nullable = false)
+    private String sessionUrl;
+    @Column(nullable = false)
+    private String sessionId;
+    @Column(nullable = false)
+    private BigDecimal amountToPay;
     @Column(nullable = false)
     private boolean isDeleted = false;
 }
