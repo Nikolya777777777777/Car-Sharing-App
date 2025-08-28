@@ -27,10 +27,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
 
-    @Value("${stripe.success-url}")
+    @Value("${success-url}")
     private String successUrl;
 
-    @Value("${stripe.cancel-url}")
+    @Value("${cancel-url}")
     private String cancelUrl;
 
     @Transactional
@@ -61,8 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setSessionId(session.id());
         payment.setSessionUrl(session.url());
 
-        // для поля rental можна зберігати першу оренду або змінити Payment на ManyToMany
-        payment.setRental(rentals.get(0));
+        payment.setRentals(rentals);
 
         paymentRepository.save(payment);
 
