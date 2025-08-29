@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +32,18 @@ public class PaymentController {
     @PostMapping
     public PaymentResponseDto create(@Valid @RequestBody PaymentRequestDto requestDto) {
         return paymentService.create(requestDto);
+    }
+
+    @Operation(summary = "Get payments by user id", description = "Get page of payments By user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Payments were got successfully",
+                    content = @Content(schema = @Schema(implementation = PaymentResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public Page<PaymentResponseDto> getPaymentByUserId(@PathVariable Long id, Pageable pageable) {
+        return paymentService.getPaymentsByUserId(id, pageable);
     }
 }

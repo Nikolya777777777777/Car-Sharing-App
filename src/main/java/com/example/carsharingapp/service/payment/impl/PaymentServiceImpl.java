@@ -4,6 +4,7 @@ import com.example.carsharingapp.client.StripeClient;
 import com.example.carsharingapp.dto.payment.PaymentRequestDto;
 import com.example.carsharingapp.dto.payment.PaymentResponseDto;
 import com.example.carsharingapp.dto.payment.StripeSessionResponse;
+import com.example.carsharingapp.mapper.payment.PaymentMapper;
 import com.example.carsharingapp.model.enums.PaymentType;
 import com.example.carsharingapp.model.enums.Status;
 import com.example.carsharingapp.model.payment.Payment;
@@ -13,6 +14,8 @@ import com.example.carsharingapp.repository.rental.RentalRepository;
 import com.example.carsharingapp.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
@@ -22,10 +25,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-
     private final StripeClient stripeClient;
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
 
     @Value("${success-url}")
     private String successUrl;
@@ -83,5 +86,23 @@ public class PaymentServiceImpl implements PaymentService {
         } else {
             return BigDecimal.valueOf(300);
         }
+    }
+
+    public void markAsPaid(String sessionId) {
+        Payment payment = paymentRepository.findBySessionId(sessionId)
+                .orElseThrow(() -> new RuntimeException("Payment not found: " + sessionId));
+        payment.setStatus(Status.PAID);
+        paymentRepository.save(payment);
+    }
+
+    @Override
+    public Page<PaymentResponseDto> getPaymentsByUserId(Long userId, Pageable pageable) {
+        Page<Payment> payments = paymentRepository.findByUserId(userId, pageable);
+
+        if (payments.isEmpty()) {
+            throw new RuntimeException("No payments were found for user with id: " + userId);
+        }
+
+        return payments.map(paymentMapper::toResponseDto);
     }
 }
