@@ -1,9 +1,9 @@
 package com.example.carsharingapp.service.payment.impl;
 
-import com.example.carsharingapp.client.StripeClient;
 import com.example.carsharingapp.dto.payment.PaymentRequestDto;
 import com.example.carsharingapp.dto.payment.PaymentResponseDto;
-import com.example.carsharingapp.dto.payment.StripeSessionResponse;
+import com.example.carsharingapp.dto.payment.PaymentStatusResponseDto;
+import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.payment.PaymentMapper;
 import com.example.carsharingapp.model.enums.PaymentType;
 import com.example.carsharingapp.model.enums.Status;
@@ -12,97 +12,92 @@ import com.example.carsharingapp.model.rental.Rental;
 import com.example.carsharingapp.repository.payment.PaymentRepository;
 import com.example.carsharingapp.repository.rental.RentalRepository;
 import com.example.carsharingapp.service.payment.PaymentService;
+import com.example.carsharingapp.service.stripe.StripeService;
+import com.stripe.model.checkout.Session;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-    private final StripeClient stripeClient;
+    private static final String PAID = "paid";
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
-
-    @Value("${success-url}")
-    private String successUrl;
-
-    @Value("${cancel-url}")
-    private String cancelUrl;
+    private final StripeService stripeService;
 
     @Transactional
+    @Override
     public PaymentResponseDto create(PaymentRequestDto request) {
-        List<Rental> rentals = rentalRepository.findAllById(request.getRentalId());
+        Rental rental = rentalRepository.findById(request.getRentalId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Rental was not found with id: " + request.getRentalId()
+                ));
 
-        if (rentals.isEmpty()) {
-            throw new RuntimeException("No rentals found for provided IDs");
-        }
-
-        BigDecimal totalAmount = rentals.stream()
-                .map(rental -> calculateAmount(rental, request.getType()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        long amountInCents = totalAmount.multiply(BigDecimal.valueOf(100)).longValue();
-
-        StripeSessionResponse session = stripeClient.createCheckoutSession(
-                amountInCents,
-                "usd",
-                successUrl,
-                cancelUrl
-        );
+        BigDecimal totalAmount = calculateAmount(rental, request.getType());
+        Session session = stripeService.createRentalPaymentSession(rental, totalAmount);
 
         Payment payment = new Payment();
         payment.setStatus(Status.PENDING);
         payment.setType(request.getType());
         payment.setAmountToPay(totalAmount);
-        payment.setSessionId(session.id());
-        payment.setSessionUrl(session.url());
-
-        payment.setRentals(rentals);
+        payment.setSessionId(session.getId());
+        payment.setSessionUrl(session.getUrl());
+        payment.setRental(rental);
 
         paymentRepository.save(payment);
 
-        return new PaymentResponseDto(
-                payment.getId(),
-                payment.getStatus(),
-                payment.getType(),
-                payment.getAmountToPay(),
-                payment.getSessionId(),
-                payment.getSessionUrl()
-        );
+        return paymentMapper.toResponseDto(payment);
     }
 
     private BigDecimal calculateAmount(Rental rental, PaymentType type) {
         if (type == PaymentType.PAYMENT) {
             long days = Duration.between(rental.getRentalDate(), rental.getReturnDate()).toDays();
-            if (days == 0) days = 1;
+            if (days == 0) {
+                days = 1;
+            }
             return rental.getCar().getDaily_fee().multiply(BigDecimal.valueOf(days));
         } else {
-            return BigDecimal.valueOf(300);
+            long days = Duration.between(rental.getReturnDate(), rental.getActualReturnDate()).toDays();
+            if (days == 0) {
+                days = 1;
+            }
+            return rental.getCar().getDaily_fee().multiply(BigDecimal.valueOf(days));
         }
     }
 
-    public void markAsPaid(String sessionId) {
+    @Override
+    public PaymentStatusResponseDto getPaymentStatus(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId)
-                .orElseThrow(() -> new RuntimeException("Payment not found: " + sessionId));
-        payment.setStatus(Status.PAID);
-        paymentRepository.save(payment);
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Payment was not found with session id: " + sessionId
+                ));
+
+        if (PAID.equals(stripeService.checkPaymentStatus(sessionId))) {
+            payment.setStatus(Status.PAID);
+            paymentRepository.save(payment);
+        } else {
+            payment.setStatus(Status.PENDING);
+            paymentRepository.save(payment);
+        }
+        return new PaymentStatusResponseDto(payment.getStatus());
     }
 
     @Override
     public Page<PaymentResponseDto> getPaymentsByUserId(Long userId, Pageable pageable) {
-        Page<Payment> payments = paymentRepository.findByUserId(userId, pageable);
-
-        if (payments.isEmpty()) {
-            throw new RuntimeException("No payments were found for user with id: " + userId);
-        }
-
-        return payments.map(paymentMapper::toResponseDto);
+//        Rental rental = rentalRepository.findByUserIdAndActualReturnDateIsNull();
+//        Page<Payment> payments = paymentRepository.findByUserId(userId, pageable);
+//        if (payments.isEmpty()) {
+//            throw new EntityNotFoundException(
+//                    "No payments were found for user with id: " + userId
+//            );
+//        }
+        return null;
+        //return payments.map(paymentMapper::toResponseDto);
     }
 }

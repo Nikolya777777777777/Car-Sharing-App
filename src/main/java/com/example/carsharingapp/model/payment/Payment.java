@@ -9,8 +9,6 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "payments")
@@ -28,13 +26,8 @@ public class Payment {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentType type;
-    @ManyToMany
-    @JoinTable(
-            name = "payments_rentals",
-            joinColumns = @JoinColumn(name = "payment_id"),
-            inverseJoinColumns = @JoinColumn(name = "rental_id")
-    )
-    private List<Rental> rentals = new ArrayList<>();
+    @ManyToOne
+    private Rental rental;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String sessionUrl;
     @Column(nullable = false)
