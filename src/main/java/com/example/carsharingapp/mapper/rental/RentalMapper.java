@@ -1,6 +1,6 @@
 package com.example.carsharingapp.mapper.rental;
 
-import com.example.carsharingapp.config.MapperConfig;
+import com.example.carsharingapp.config.mapper.MapperConfig;
 import com.example.carsharingapp.dto.rental.RentalRequestDto;
 import com.example.carsharingapp.dto.rental.RentalResponseDto;
 import com.example.carsharingapp.dto.rental.RentalResponseDtoWithoutActualReturnDate;

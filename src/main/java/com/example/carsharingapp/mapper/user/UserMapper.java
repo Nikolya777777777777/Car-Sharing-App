@@ -1,6 +1,6 @@
 package com.example.carsharingapp.mapper.user;
 
-import com.example.carsharingapp.config.MapperConfig;
+import com.example.carsharingapp.config.mapper.MapperConfig;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
 import com.example.carsharingapp.dto.user.UserResponseDto;
 import com.example.carsharingapp.model.user.User;
