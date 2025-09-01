@@ -1,8 +1,8 @@
 package com.example.carsharingapp.dto.rental;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class RentalRequestDto {

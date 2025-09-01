@@ -12,13 +12,13 @@ import org.mapstruct.Mapping;
 public interface RentalMapper {
     @Mapping(target = "car.id", source = "carId")
     @Mapping(target = "user.id", source = "userId")
-    Rental toModel (RentalRequestDto rentalRequestDto);
+    Rental toModel(RentalRequestDto rentalRequestDto);
 
     @Mapping(target = "carId", source = "car.id")
     @Mapping(target = "userId", source = "user.id")
-    RentalResponseDto toResponseDto (Rental rental);
+    RentalResponseDto toResponseDto(Rental rental);
 
     @Mapping(target = "carId", source = "car.id")
     @Mapping(target = "userId", source = "user.id")
-    RentalResponseDtoWithoutActualReturnDate toResponseDtoWithoutActualReturnDate (Rental rental);
+    RentalResponseDtoWithoutActualReturnDate toResponseDtoWithoutActualReturnDate(Rental rental);
 }

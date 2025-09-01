@@ -1,6 +1,11 @@
 package com.example.carsharingapp.service.rental.impl;
 
-import com.example.carsharingapp.dto.rental.*;
+import com.example.carsharingapp.dto.rental.RentalActiveOrNotActiveRequestDto;
+import com.example.carsharingapp.dto.rental.RentalDeciderDto;
+import com.example.carsharingapp.dto.rental.RentalRequestDto;
+import com.example.carsharingapp.dto.rental.RentalResponseDto;
+import com.example.carsharingapp.dto.rental.RentalResponseDtoWithoutActualReturnDate;
+import com.example.carsharingapp.dto.rental.RentalReturnDto;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.rental.RentalMapper;
 import com.example.carsharingapp.model.car.Car;
@@ -8,13 +13,13 @@ import com.example.carsharingapp.model.rental.Rental;
 import com.example.carsharingapp.repository.car.CarRepository;
 import com.example.carsharingapp.repository.rental.RentalRepository;
 import com.example.carsharingapp.service.rental.RentalService;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +27,22 @@ public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
+
     @Override
     public RentalResponseDtoWithoutActualReturnDate create(RentalRequestDto requestDto) {
         Car car = carRepository.findById(requestDto.getCarId())
-                .orElseThrow(() -> new EntityNotFoundException("Car was not found with id: " + requestDto.getCarId()));
+                .orElseThrow(() -> new EntityNotFoundException("Car was not found with id: "
+                        + requestDto.getCarId()));
         car.setInventory(car.getInventory() - 1);
         carRepository.save(car);
         requestDto.setActualReturnDate(null);
-        return rentalMapper.toResponseDtoWithoutActualReturnDate(rentalRepository.save(rentalMapper.toModel(requestDto)));
+        return rentalMapper.toResponseDtoWithoutActualReturnDate(rentalRepository
+                .save(rentalMapper.toModel(requestDto)));
     }
 
     @Override
-    public Page<RentalResponseDto> returnCar(Long userId, RentalReturnDto rentalReturnDto, Pageable pageable) {
+    public Page<RentalResponseDto> returnCar(Long userId, RentalReturnDto rentalReturnDto,
+                                             Pageable pageable) {
         List<Rental> rental = rentalRepository.findByUserIdAndActualReturnDateIsNull(userId);
         if (rental.isEmpty()) {
             throw new EntityNotFoundException("Active rentals not found for userId: " + userId);
@@ -59,7 +68,8 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public Page<RentalDeciderDto> returnUserRentals(Long userId, Pageable pageable, RentalActiveOrNotActiveRequestDto requestDto) {
+    public Page<RentalDeciderDto> returnUserRentals(Long userId, Pageable pageable,
+                                                    RentalActiveOrNotActiveRequestDto requestDto) {
         List<Rental> rentals;
         if (requestDto.isActive()) {
             rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(userId);
@@ -89,9 +99,11 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public RentalDeciderDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId, Pageable pageable) {
+    public RentalDeciderDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId,
+                                                            Pageable pageable) {
         Rental rental = rentalRepository.findByUserIdAndRentalId(userId, rentalId)
-                .orElseThrow(() -> new EntityNotFoundException("Rental was not found with id: " + rentalId));
+                .orElseThrow(() -> new EntityNotFoundException("Rental was not found with id: "
+                        + rentalId));
         if (rental.getActualReturnDate() == null) {
             return rentalMapper.toResponseDtoWithoutActualReturnDate(rental);
         }

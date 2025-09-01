@@ -15,16 +15,12 @@ import com.example.carsharingapp.service.payment.PaymentService;
 import com.example.carsharingapp.service.stripe.StripeService;
 import com.stripe.model.checkout.Session;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -65,13 +61,14 @@ public class PaymentServiceImpl implements PaymentService {
             if (days == 0) {
                 days = 1;
             }
-            return rental.getCar().getDaily_fee().multiply(BigDecimal.valueOf(days));
+            return rental.getCar().getDailyFee().multiply(BigDecimal.valueOf(days));
         } else {
-            long days = Duration.between(rental.getReturnDate(), rental.getActualReturnDate()).toDays();
+            long days = Duration.between(rental.getReturnDate(),
+                    rental.getActualReturnDate()).toDays();
             if (days == 0) {
                 days = 1;
             }
-            return rental.getCar().getDaily_fee().multiply(BigDecimal.valueOf(days));
+            return rental.getCar().getDailyFee().multiply(BigDecimal.valueOf(days));
         }
     }
 

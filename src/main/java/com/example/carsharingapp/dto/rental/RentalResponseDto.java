@@ -1,7 +1,7 @@
 package com.example.carsharingapp.dto.rental;
 
-import lombok.Data;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class RentalResponseDto extends RentalDeciderDto {

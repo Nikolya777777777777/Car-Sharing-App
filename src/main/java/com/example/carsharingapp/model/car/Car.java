@@ -3,18 +3,18 @@ package com.example.carsharingapp.model.car;
 import com.example.carsharingapp.model.enums.Type;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cars")
@@ -37,7 +37,7 @@ public class Car {
     @Enumerated(EnumType.STRING)
     private Type type;
     @Column(nullable = false)
-    private BigDecimal daily_fee;
+    private BigDecimal dailyFee;
     @Column(nullable = false)
     private boolean isDeleted = false;
 }

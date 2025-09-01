@@ -45,7 +45,8 @@ public class StripeServiceImpl implements StripeService {
             Session session = Session.retrieve(sessionId);
             return session.getPaymentStatus();
         } catch (StripeException e) {
-            throw new StripeSessionFailureException("Can't create stripe session: "  + e.getMessage());
+            throw new StripeSessionFailureException("Can't create stripe session: "
+                    + e.getMessage());
         }
     }
 
@@ -53,7 +54,8 @@ public class StripeServiceImpl implements StripeService {
         try {
             return Session.create(params);
         } catch (StripeException e) {
-            throw new StripeSessionFailureException("Can't create stripe session: "  + e.getMessage());
+            throw new StripeSessionFailureException("Can't create stripe session: "
+                    + e.getMessage());
         }
     }
 
@@ -94,7 +96,8 @@ public class StripeServiceImpl implements StripeService {
                 .PriceData
                 .ProductData
                 .builder()
-                .setName("Renting car: " + rental.getCar().getBrand() + " " + rental.getCar().getModel())
+                .setName("Renting car: " + rental.getCar().getBrand() + " "
+                        + rental.getCar().getModel())
                 .build();
     }
 }
