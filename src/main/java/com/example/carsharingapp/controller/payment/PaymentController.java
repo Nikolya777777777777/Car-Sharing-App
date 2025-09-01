@@ -14,7 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/payment")
@@ -22,10 +29,12 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
     private final PaymentService paymentService;
 
-    @Operation(summary = "Create a new payment", description = "User create a payment as he wants to pay for renting car")
+    @Operation(summary = "Create a new payment", description = "User create "
+            + "a payment as he wants to pay for renting car")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Payment was created successfully",
-                    content = @Content(schema = @Schema(implementation = PaymentResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation
+                            = PaymentResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
@@ -38,7 +47,8 @@ public class PaymentController {
     @Operation(summary = "Get payments by user id", description = "Get page of payments By user id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Payments were got successfully",
-                    content = @Content(schema = @Schema(implementation = PaymentResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation
+                            = PaymentResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
@@ -48,10 +58,12 @@ public class PaymentController {
         return paymentService.getPaymentsByUserId(id, pageable);
     }
 
-    @Operation(summary = "Get payment status as successful", description = "Get payment status as successful by session id")
+    @Operation(summary = "Get payment status as successful", description = "Get payment status as "
+            + "successful by session id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Payment was got successfully",
-                    content = @Content(schema = @Schema(implementation = PaymentStatusResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation
+                            = PaymentStatusResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
@@ -61,10 +73,12 @@ public class PaymentController {
         return paymentService.getPaymentStatus(sessionId);
     }
 
-    @Operation(summary = "Get payment status as canceled", description = "Get payment status as canceled by session id")
+    @Operation(summary = "Get payment status as canceled", description = "Get payment status "
+            + "as canceled by session id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Payments were got successfully",
-                    content = @Content(schema = @Schema(implementation = PaymentStatusResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation
+                            = PaymentStatusResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
