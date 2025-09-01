@@ -9,12 +9,12 @@ import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.car.CarRepository;
 import com.example.carsharingapp.repository.car.CarSpecificationBuilder;
 import com.example.carsharingapp.service.car.CarService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +38,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Page<CarResponseDto> searchCarsByParams(CarSearchParamsDto searchParamsDto, Pageable pageable) {
+    public Page<CarResponseDto> searchCarsByParams(CarSearchParamsDto searchParamsDto,
+                                                   Pageable pageable) {
         Specification<Car> carSpecification = carSpecificationBuilder.build(searchParamsDto);
         Page<Car> carPage = carRepository.findAll(carSpecification, pageable);
-    return carPage.map(carMapper::toResponseDto);
+        return carPage.map(carMapper::toResponseDto);
     }
 
     @Override

@@ -4,9 +4,9 @@ import com.example.carsharingapp.exception.SpecificationProviderManagerException
 import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.SpecificationProvider;
 import com.example.carsharingapp.repository.SpecificationProviderManager;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

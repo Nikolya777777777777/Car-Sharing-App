@@ -9,7 +9,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class)
 public interface CarMapper {
-    Car toModel (CarRequestDto carRequestDto);
+    Car toModel(CarRequestDto carRequestDto);
 
     CarResponseDto toResponseDto(Car car);
 

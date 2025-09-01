@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface PaymentService {
     PaymentResponseDto create(PaymentRequestDto requestDto);
+
     PaymentStatusResponseDto getPaymentStatus(String sessionId);
+
     Page<PaymentResponseDto> getPaymentsByUserId(Long userId, Pageable pageable);
 }

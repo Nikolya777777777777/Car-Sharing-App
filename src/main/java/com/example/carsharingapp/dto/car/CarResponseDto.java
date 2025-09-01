@@ -1,8 +1,8 @@
 package com.example.carsharingapp.dto.car;
 
 import com.example.carsharingapp.model.enums.Type;
-import lombok.Data;
 import java.math.BigDecimal;
+import lombok.Data;
 
 @Data
 public class CarResponseDto {
@@ -11,5 +11,5 @@ public class CarResponseDto {
     private String brand;
     private int inventory;
     private Type type;
-    private BigDecimal daily_fee;
+    private BigDecimal dailyFee;
 }

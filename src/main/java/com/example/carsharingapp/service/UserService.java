@@ -7,7 +7,10 @@ import com.example.carsharingapp.exception.RegistrationException;
 
 public interface UserService {
     UserResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException;
+
     UserResponseDto updateRoleForUser(Long id, UpdateRoleRequestDto requestDto);
+
     UserResponseDto getAllInfo(Long userId);
+
     UserResponseDto updateInformationAboutUser(Long userId, UserRegistrationRequestDto requestDto);
 }

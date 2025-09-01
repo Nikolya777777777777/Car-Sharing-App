@@ -2,9 +2,9 @@ package com.example.carsharingapp.repository.car.spec;
 
 import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.SpecificationProvider;
+import java.util.Arrays;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import java.util.Arrays;
 
 @Component
 public class TypeSpecificationProvider implements SpecificationProvider<Car> {
