@@ -39,5 +39,5 @@ public class Car {
     @Column(nullable = false)
     private BigDecimal daily_fee;
     @Column(nullable = false)
-    private boolean is_deleted = false;
+    private boolean isDeleted = false;
 }
