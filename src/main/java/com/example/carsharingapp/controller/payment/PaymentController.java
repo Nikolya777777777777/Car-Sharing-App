@@ -2,6 +2,7 @@ package com.example.carsharingapp.controller.payment;
 
 import com.example.carsharingapp.dto.payment.PaymentRequestDto;
 import com.example.carsharingapp.dto.payment.PaymentResponseDto;
+import com.example.carsharingapp.dto.payment.PaymentStatusResponseDto;
 import com.example.carsharingapp.service.payment.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,5 +46,31 @@ public class PaymentController {
     @GetMapping("/{id}")
     public Page<PaymentResponseDto> getPaymentByUserId(@PathVariable Long id, Pageable pageable) {
         return paymentService.getPaymentsByUserId(id, pageable);
+    }
+
+    @Operation(summary = "Get payment status as successful", description = "Get payment status as successful by session id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Payment was got successfully",
+                    content = @Content(schema = @Schema(implementation = PaymentStatusResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/success")
+    public PaymentStatusResponseDto getPaymentSuccess(@RequestParam String sessionId) {
+        return paymentService.getPaymentStatus(sessionId);
+    }
+
+    @Operation(summary = "Get payment status as canceled", description = "Get payment status as canceled by session id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Payments were got successfully",
+                    content = @Content(schema = @Schema(implementation = PaymentStatusResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/cancel")
+    public PaymentStatusResponseDto getPaymentCancel(@RequestParam String sessionId) {
+        return paymentService.getPaymentStatus(sessionId);
     }
 }

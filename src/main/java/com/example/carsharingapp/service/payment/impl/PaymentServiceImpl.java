@@ -17,10 +17,14 @@ import com.stripe.model.checkout.Session;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -80,24 +84,18 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (PAID.equals(stripeService.checkPaymentStatus(sessionId))) {
             payment.setStatus(Status.PAID);
-            paymentRepository.save(payment);
         } else {
             payment.setStatus(Status.PENDING);
-            paymentRepository.save(payment);
         }
+
+        paymentRepository.save(payment);
+
         return new PaymentStatusResponseDto(payment.getStatus());
     }
 
     @Override
     public Page<PaymentResponseDto> getPaymentsByUserId(Long userId, Pageable pageable) {
-//        Rental rental = rentalRepository.findByUserIdAndActualReturnDateIsNull();
-//        Page<Payment> payments = paymentRepository.findByUserId(userId, pageable);
-//        if (payments.isEmpty()) {
-//            throw new EntityNotFoundException(
-//                    "No payments were found for user with id: " + userId
-//            );
-//        }
-        return null;
-        //return payments.map(paymentMapper::toResponseDto);
+        return paymentRepository.findByUserId(userId, pageable)
+                .map(paymentMapper::toResponseDto);
     }
 }
