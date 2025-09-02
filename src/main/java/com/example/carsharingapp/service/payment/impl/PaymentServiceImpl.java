@@ -54,7 +54,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentRepository.save(payment);
 
-        telegramNotificationService.sendNotification("Payment with id: " + payment.getId() + " was created");
+        telegramNotificationService.sendNotification("Payment with id: "
+                + payment.getId() + " was created");
         return paymentMapper.toResponseDto(payment);
     }
 
@@ -90,7 +91,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentRepository.save(payment);
 
-        telegramNotificationService.sendNotification("Your payment with id: " + payment.getId() + " has status " + payment.getStatus());
+        telegramNotificationService.sendNotification("Your payment with id: "
+                + payment.getId() + " has status " + payment.getStatus());
         return new PaymentStatusResponseDto(payment.getStatus());
     }
 

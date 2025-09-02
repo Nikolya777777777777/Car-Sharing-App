@@ -38,7 +38,8 @@ public class RentalServiceImpl implements RentalService {
         car.setInventory(car.getInventory() - 1);
         carRepository.save(car);
         requestDto.setActualReturnDate(null);
-        telegramNotificationService.sendNotification(car.getBrand() + " " + car.getModel() + " " + "was successfully rented");
+        telegramNotificationService.sendNotification(car.getBrand() + " "
+                + car.getModel() + " " + "was successfully rented");
         return rentalMapper.toResponseDtoWithoutActualReturnDate(rentalRepository
                 .save(rentalMapper.toModel(requestDto)));
     }
@@ -66,7 +67,7 @@ public class RentalServiceImpl implements RentalService {
         List<RentalResponseDto> dtos = saved.stream()
                 .map(rentalMapper::toResponseDto)
                 .toList();
-        for(Rental rentalToReturn : rental) {
+        for (Rental rentalToReturn : rental) {
             telegramNotificationService.sendNotification(rentalToReturn.getCar().getBrand() + " "
                     + rentalToReturn.getCar().getModel() + " " + "was successfully returned");
         }
