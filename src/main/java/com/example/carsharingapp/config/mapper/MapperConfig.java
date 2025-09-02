@@ -1,4 +1,4 @@
-package com.example.carsharingapp.config;
+package com.example.carsharingapp.config.mapper;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.NullValueCheckStrategy;

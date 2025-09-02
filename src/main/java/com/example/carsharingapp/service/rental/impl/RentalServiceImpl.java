@@ -12,6 +12,7 @@ import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.model.rental.Rental;
 import com.example.carsharingapp.repository.car.CarRepository;
 import com.example.carsharingapp.repository.rental.RentalRepository;
+import com.example.carsharingapp.service.bot.TelegramNotificationService;
 import com.example.carsharingapp.service.rental.RentalService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
+    private final TelegramNotificationService telegramNotificationService;
 
     @Override
     public RentalResponseDtoWithoutActualReturnDate create(RentalRequestDto requestDto) {
@@ -36,6 +38,8 @@ public class RentalServiceImpl implements RentalService {
         car.setInventory(car.getInventory() - 1);
         carRepository.save(car);
         requestDto.setActualReturnDate(null);
+        telegramNotificationService.sendNotification(car.getBrand() + " "
+                + car.getModel() + " " + "was successfully rented");
         return rentalMapper.toResponseDtoWithoutActualReturnDate(rentalRepository
                 .save(rentalMapper.toModel(requestDto)));
     }
@@ -63,7 +67,10 @@ public class RentalServiceImpl implements RentalService {
         List<RentalResponseDto> dtos = saved.stream()
                 .map(rentalMapper::toResponseDto)
                 .toList();
-
+        for (Rental rentalToReturn : rental) {
+            telegramNotificationService.sendNotification(rentalToReturn.getCar().getBrand() + " "
+                    + rentalToReturn.getCar().getModel() + " " + "was successfully returned");
+        }
         return new PageImpl<>(dtos, pageable, dtos.size());
     }
 

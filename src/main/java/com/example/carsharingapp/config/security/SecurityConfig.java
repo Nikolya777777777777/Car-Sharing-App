@@ -1,4 +1,4 @@
-package com.example.carsharingapp.config;
+package com.example.carsharingapp.config.security;
 
 import com.example.carsharingapp.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;

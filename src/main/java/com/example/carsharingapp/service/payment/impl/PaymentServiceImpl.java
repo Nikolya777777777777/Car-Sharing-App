@@ -11,6 +11,7 @@ import com.example.carsharingapp.model.payment.Payment;
 import com.example.carsharingapp.model.rental.Rental;
 import com.example.carsharingapp.repository.payment.PaymentRepository;
 import com.example.carsharingapp.repository.rental.RentalRepository;
+import com.example.carsharingapp.service.bot.TelegramNotificationService;
 import com.example.carsharingapp.service.payment.PaymentService;
 import com.example.carsharingapp.service.stripe.StripeService;
 import com.stripe.model.checkout.Session;
@@ -30,6 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final StripeService stripeService;
+    private final TelegramNotificationService telegramNotificationService;
 
     @Transactional
     @Override
@@ -52,6 +54,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentRepository.save(payment);
 
+        telegramNotificationService.sendNotification("Payment with id: "
+                + payment.getId() + " was created");
         return paymentMapper.toResponseDto(payment);
     }
 
@@ -87,6 +91,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentRepository.save(payment);
 
+        telegramNotificationService.sendNotification("Your payment with id: "
+                + payment.getId() + " has status " + payment.getStatus());
         return new PaymentStatusResponseDto(payment.getStatus());
     }
 
