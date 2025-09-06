@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.FetchType;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,10 +34,10 @@ public class Rental {
     @Column(nullable = false)
     private LocalDateTime returnDate;
     private LocalDateTime actualReturnDate;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @Column(nullable = false)

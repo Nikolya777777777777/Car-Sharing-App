@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.FetchType;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +35,7 @@ public class Payment {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentType type;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Rental rental;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String sessionUrl;
