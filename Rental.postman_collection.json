@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "c611cd1e-d79c-48eb-8ba8-c040b7b45617",
+		"name": "Rental",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44500511",
+		"_collection_link": "https://mykola-2085682.postman.co/workspace/Mykola's-Workspace~1a7b0300-57ed-43a8-88a7-8178c795b70b/collection/44500511-c611cd1e-d79c-48eb-8ba8-c040b7b45617?action=share&source=collection_link&creator=44500511"
+	},
+	"item": [
+		{
+			"name": "getRentalByUserIdAndRentalId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NTk0NDYwNSwiZXhwIjoxNzU1OTQ3NjA1fQ.deNDQwQlIKfqOwv7-8d00GSMDhoATa6p7GEkD7xjdoEmZaZJZ8eT_9YDO6V7a5Uu",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roleName\": \"ROLE_CUSTOMER\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/rentals/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"rentals",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createNewRental",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyY0BnbWFpbC5jb20iLCJpYXQiOjE3NTU5NTg3MTIsImV4cCI6MTc1NTk2MTcxMn0.AkpEipFqYfkqaD-9ms5Ozksw_czMKSz13vZM-xJRiJBa436P1-NjZdQ8H9PNaTGh",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rentalDate\": \"2025-08-25T14:30:00\",\r\n    \"returnDate\": \"2025-08-26T14:30:00\"\r\n    \"actualReturnDate\": null,\r\n    \"carId\": 1,\r\n    \"userId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/rentals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"rentals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "returnCar",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NjE5NzY4OSwiZXhwIjoxNzU2MjAwNjg5fQ.G1bLSsz5gTiLp_cwIwKrPwTYNu1MwAEwc-5qVx2uVhX0g54GDovLaikB6ZYKTc3x",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rentalDate\": \"2025-08-25T14:30:00\",\r\n    \"returnDate\": \"2025-08-26T14:30:00\"\r\n    \"actualReturnDate\": null,\r\n    \"carId\": 1,\r\n    \"userId\": 1\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/rentals/return",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"rentals",
+						"return"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllActiveOrNotActiveRentalsByUserId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NjE5NzY4OSwiZXhwIjoxNzU2MjAwNjg5fQ.G1bLSsz5gTiLp_cwIwKrPwTYNu1MwAEwc-5qVx2uVhX0g54GDovLaikB6ZYKTc3x",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"is_active\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/rentals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"rentals"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
