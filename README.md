@@ -82,43 +82,46 @@ Authorization: Bearer <your_token>
 
 ## Changes
 1) Database migration conflicts – At the beginning, Liquibase migrations caused issues with creating relations between entities (e.g., rentals, users, cars, and payments).
-   
+   - Fixed by splitting migrations into smaller files.
+   - Adjusted foreign key constraints (Rental → Car, Rental → User, Payment → Rental) to avoid conflicts.
 
-2) JWT authentication issues – Early token validation bugs were fixed by implementing a custom JWT filter and adding comprehensive integration tests.
+2) JWT authentication & roles – Initial problems with JWT token validation and assigning roles (USER, ADMIN).
+   - Solved by creating a custom JWT filter.
+   - Added integration tests to verify role-based access for protected endpoints.
 
-3) Pagination and filtering – Complex queries for retrieving books by multiple categories were optimized using Spring Data JPA’s Specification API.
+3) Car availability & rentals filtering – Implementing business logic for checking car availability and retrieving active/overdue rentals was tricky.
+   - Solved using Spring Data JPA Criteria API with dynamic filtering.
+   - Optimized queries to handle multiple filtering options (by user, car, rental status).
 
-4) Testing - I had problems with dropping and creating tables in database, but I solved this with excluding keys and truncating all tables.
+4) Payments integration – Stripe API integration for handling payments initially failed due to incorrect webhook handling.
+   - Fixed by properly verifying Stripe events.
+
+5) Testing – Faced problems with cleaning the database between tests (foreign keys blocked truncation).
+   - Solved by disabling constraints during tests and truncating all tables.
 
 ## Postman Collections
 In each request you need to use Authentication through Bearer token, so before each request login into system
-and remember that this token is valid for 5 minutes then you will need to re-login in order to get new token
+and remember that this token is valid for 50 minutes then you will need to re-login in order to get new token
 and remember that if you send request to add, delete, update your user need to have role Admin
 
-1.Book
-1) GET request - http://localhost:8082/api/books/1 - you will get book by id(in url id = 1)
-2) POST request - http://localhost:8082/api/books - you need also send body with params in json and then you will get book which was saved to database
-3) GET request - http://localhost:8082/api/books - you will get all existing books by
-4) DELETE request - http://localhost:8082/api/books/2 - you will delete book by id(in url id = 2)
-5) PUT request - http://localhost:8082/api/books/1 - you need also send body with params in json and then you will get book with changed params
-6) GET request - http://localhost:8080/books/search?authors=Anton&size=5&sort=price - you will get all books by params which match params that you gave in url
-7) GET request - http://localhost:8082/api/books?page=0&size=5&sort=price,desc - you will get all books by given params about page in url
-8) GET request - http://localhost:8082/api/categories/1/books - you will get All books which have the same category id as given in url(in url id = 1)
-   [Download Book Postman Collection](postman-requests/Book.postman_collection.json)
+1.Car
+1) POST request - http://localhost:8084/api/cars - you will create a new car by given params in json(admin only)
+2) GET request - http://localhost:8084/api/cars - you will get all existing cars in the service
+3) GET request - http://localhost:8084/api/cars/search?type=SEDAN - you will get all existing cars with filter by given params in the url(type of the car must be 'SEDAN')
+4) PATCH request - http://localhost:8084/api/cars/1 - you will update a car by id and params what you want to change in json(in url id = 1)(admin only)
+5) DELETE request - http://localhost:8084/api/cars/1 - you will delete car by id(in url id = 1)(admin only)
 
-2.Category
-1) POST request - http://localhost:8082/api/categories - you need also send body with params in json and then you will get category which was saved to database
-2) GET request - http://localhost:8082/api/categories/1 - you will get category by id(in url id = 1)
-3) GET request - http://localhost:8082/api/categories/1/books - you will get all books by category id(in url category id = 1)
-   [Download Category Postman Collection](postman-requests/Category.postman_collection.json)
+2.Rental
+1) POST request - http://localhost:8084/api/rentals - you will create rental by given params in json
+2) GET request - http://localhost:8084/api/rentals/1 - you will get rental by rental id and only these rentals which this user had before(in url rental id = 1)
+3) GET request - http://localhost:8084/api/rentals/1/rentals - you will get all your active or not active rentals by given this information in json format
+4) POST request - http://localhost:8084/api/rentals/return - you will return car which you rented before, you need to send rental ids in json format
 
-3.Order
-1) POST request - http://localhost:8082/api/orders - you need also send body with params in json and then you will get order which was saved to database
-2) GET request - http://localhost:8082/api/orders - you will get all Users orders
-3) PATCH request - http://localhost:8082/api/orders/16 - you need to send body with params in json and then you will get updated category which was updated in database
-4) GET request - http://localhost:8082/api/orders/16/items - you will get all items in Order by order id (in url order id = 16)
-5) GET request - http://localhost:8082/api/orders/16/items/7 - you will get all order items in order by order id and item id (in url order id = 16, item id = 7)
-   [Download Order Postman Collection](postman-requests/Order.postman_collection.json)
+3.Payment
+1) POST request - http://localhost:8084/api/payment - you will create a new payment in order to pay for rental in json you need to send type of payment and rental id for what you want to pay
+2) GET request - http://localhost:8084/api/payment/1 - you will get user's payment by id (in url payment id = 1)
+3) GET request - http://localhost:8084/api/payment/success?sessionId=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0o - this endpoint is created to redirect user in case od successful payment (in url must be individual session id)
+4) GET request - http://localhost:8084/api/payment/cancel?sessionId=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0 - this endpoint is created to redirect user in case od canceled payment (in url must be individual session id)
 
 4.ShoppingCart
 1) GET request - http://localhost:8082/api/cart - you will get shopping cart for user
