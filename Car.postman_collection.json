@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "56d6d43c-c019-4a4a-a10d-5a991cee1559",
+		"name": "Car",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44500511",
+		"_collection_link": "https://mykola-2085682.postman.co/workspace/Mykola's-Workspace~1a7b0300-57ed-43a8-88a7-8178c795b70b/collection/44500511-56d6d43c-c019-4a4a-a10d-5a991cee1559?action=share&source=collection_link&creator=44500511"
+	},
+	"item": [
+		{
+			"name": "CreateCar",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJvcmxpdWsuaXJ5bmFAZ21haWwuY29tIiwiaWF0IjoxNzUzOTQ4NTYyLCJleHAiOjE3NTM5NDg4NjJ9.2xCYo6HC8uOhYrQQMlyib21uE-hCMJVTqoShLp-PVWmcmG8JO2RM-usspW4tUaG_",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"model\": \"A4\",\r\n    \"brand\":  \"Audi\",\r\n    \"inventory\": 1,\r\n    \"type\": \"Sedan\",\r\n    \"daily_fee\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/cars",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllCars",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJvcmxpdWsuaXJ5bmFAZ21haWwuY29tIiwiaWF0IjoxNzUzOTQ4NTYyLCJleHAiOjE3NTM5NDg4NjJ9.2xCYo6HC8uOhYrQQMlyib21uE-hCMJVTqoShLp-PVWmcmG8JO2RM-usspW4tUaG_",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"model\": \"A4\",\r\n    \"brand\":  \"Audi\",\r\n    \"inventory\": 1,\r\n    \"type\": \"Sedan\",\r\n    \"daily_fee\": 200\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/cars",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchCarByParams",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NTc5Mjc4MywiZXhwIjoxNzU1Nzk1NzgzfQ.IZfVVUv05Cn7mxw-_mLnkXI-OXknlXN2mD_9uLnbp37CaY2UGEAJMXrTTeMjnjM1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"model\": \"A4\",\r\n    \"brand\":  \"Audi\",\r\n    \"inventory\": 1,\r\n    \"type\": \"Sedan\",\r\n    \"daily_fee\": 200\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/cars/search?type=SUV",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"cars",
+						"search"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "SUV"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateCarDetails",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NTkzNzQ5MCwiZXhwIjoxNzU1OTQwNDkwfQ.ONb_2HsYiWhYYXWwxrNQidz6XANKxZ9QBZ6ErxykUOilobN7uZOOQ6scL--Ehb0T",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"model\": \"A5\",\r\n    \"brand\": \"Audi\",\r\n    \"inventory\": 100,\r\n    \"type\": \"SEDAN\",\r\n    \"daily_fee\": 200.00\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/cars/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"cars",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteCarById",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NTkzODQ5NSwiZXhwIjoxNzU1OTQxNDk1fQ.eUUUhAasLdkaD3X6SEkd86RF7faOoqDBIjK5yJtO1_JOgGe4JoD3-5Kk98mNlE5k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/api/cars/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"cars",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
