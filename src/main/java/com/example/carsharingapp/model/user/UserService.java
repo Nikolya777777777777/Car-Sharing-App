@@ -1,4 +1,4 @@
-package com.example.carsharingapp.service;
+package com.example.carsharingapp.model.user;
 
 import com.example.carsharingapp.dto.user.UpdateRoleRequestDto;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;

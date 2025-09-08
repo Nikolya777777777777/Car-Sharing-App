@@ -12,9 +12,11 @@ import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class StripeServiceImpl implements StripeService {
     private static final String USD = "usd";
     private static final Long DEFAULT_QUANTITY = 1L;
@@ -31,23 +33,6 @@ public class StripeServiceImpl implements StripeService {
     @PostConstruct
     void init() {
         Stripe.apiKey = stripeSecretKey;
-    }
-
-    @Override
-    public Session createRentalPaymentSession(Rental rental, BigDecimal amount) {
-        SessionCreateParams sessionParams = createSessionParams(amount, rental);
-        return createSession(sessionParams);
-    }
-
-    @Override
-    public String checkPaymentStatus(String sessionId) {
-        try {
-            Session session = Session.retrieve(sessionId);
-            return session.getPaymentStatus();
-        } catch (StripeException e) {
-            throw new StripeSessionFailureException("Can't create stripe session: "
-                    + e.getMessage());
-        }
     }
 
     private Session createSession(SessionCreateParams params) {
@@ -99,5 +84,22 @@ public class StripeServiceImpl implements StripeService {
                 .setName("Renting car: " + rental.getCar().getBrand() + " "
                         + rental.getCar().getModel())
                 .build();
+    }
+
+    @Override
+    public Session createRentalPaymentSession(Rental rental, BigDecimal amount) {
+        SessionCreateParams sessionParams = createSessionParams(amount, rental);
+        return createSession(sessionParams);
+    }
+
+    @Override
+    public String checkPaymentStatus(String sessionId) {
+        try {
+            Session session = Session.retrieve(sessionId);
+            return session.getPaymentStatus();
+        } catch (StripeException e) {
+            throw new StripeSessionFailureException("Can't create stripe session: "
+                    + e.getMessage());
+        }
     }
 }

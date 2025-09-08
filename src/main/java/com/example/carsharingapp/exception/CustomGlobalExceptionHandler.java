@@ -42,12 +42,14 @@ public class CustomGlobalExceptionHandler {
     }
 
     @ExceptionHandler(SpecificationProviderManagerException.class)
-    public ResponseEntity<Object> handleSpecificationProviderManagerException(SpecificationProviderManagerException ex) {
+    public ResponseEntity<Object> handleSpecificationProviderManagerException(
+            SpecificationProviderManagerException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(StripeSessionFailureException.class)
-    public ResponseEntity<Object> handleStripeSessionFailureException(StripeSessionFailureException ex) {
+    public ResponseEntity<Object> handleStripeSessionFailureException(
+            StripeSessionFailureException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
