@@ -122,22 +122,18 @@ and remember that if you send request to add, delete, update your user need to h
 2) GET request - http://localhost:8084/api/payment/1 - you will get user's payment by id (in url payment id = 1)
 3) GET request - http://localhost:8084/api/payment/success?sessionId=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0o - this endpoint is created to redirect user in case od successful payment (in url must be individual session id)
 4) GET request - http://localhost:8084/api/payment/cancel?sessionId=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0 - this endpoint is created to redirect user in case od canceled payment (in url must be individual session id)
+    
 
-4.ShoppingCart
-1) GET request - http://localhost:8082/api/cart - you will get shopping cart for user
-2) POST request - http://localhost:8082/api/cart - you need to send body with params in json and then you will get shopping cart which was saved to database
-3) PUT request - http://localhost:8082/api/cart/items/2 - you need to send body with params in json and then you will get updated shopping cart which was updated in database
-4) DELETE request - http://localhost:8082/api/cart/items/2 - you will delete cart item in shopping cart by id(in url id = 2)
-   [Download Shopping Cart Postman Collection](postman-requests/ShoppingCart.postman_collection.json)
-
-5.User
-1) POST request - http://localhost:8082/api/auth/registration - you need to send body with params in json and then you will get user which was saved to database
-2) POST request - http://localhost:8083/api/auth/login - you need to send credentials for login(username and password) and then you will get jwt token which you need to send all requests
-   [Download User Postman Collection](postman-requests/User.postman_collection.json)
+4.User
+1) POST request - http://localhost:8084/api/auth/registration - you will register a new user with all required information about him in json
+2) POST request - http://localhost:8084/api/auth/login - you will send credentials(email and password) if they are right you will get jwt key for authentication for each endpoint(available for your role)
+3) PUT request - http://localhost:8084/api/users/1/role - you need to send body with params in json about what role you what to give for this user(in url user id = 1)(admin only)
+4) GET request - http://localhost:8084/api/users/me - you will get all information about user
+5) PATCH request - http://localhost:8084/api/users/me - you will update information about user what you want to change you need to send in json
 
 ## Swagger
 The API is documented using Swagger/OpenAPI and is available at:
-- `http://localhost:8082/swagger-ui/index.html`
+- `http://localhost:8084/swagger-ui/index.html`
 
 ## Contacts
 - Author: Mykola

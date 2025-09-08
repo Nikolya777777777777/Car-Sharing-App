@@ -13,7 +13,6 @@ public class CarRequestDto {
     private String model;
     @NotBlank
     private String brand;
-    @NotNull
     @Positive
     private int inventory;
     @NotNull
