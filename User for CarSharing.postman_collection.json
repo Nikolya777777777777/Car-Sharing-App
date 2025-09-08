@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "4d8df0f7-0bbd-41b3-98a9-ab2fb454f020",
+		"name": "User for CarSharing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44500511",
+		"_collection_link": "https://mykola-2085682.postman.co/workspace/Mykola's-Workspace~1a7b0300-57ed-43a8-88a7-8178c795b70b/collection/44500511-4d8df0f7-0bbd-41b3-98a9-ab2fb454f020?action=share&source=collection_link&creator=44500511"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"nikolya@gmail.com\",\r\n    \"firstName\": \"Mykola\",\r\n    \"lastName\": \"Kovbasiuk\",\r\n    \"password\": \"12345678\",\r\n    \"repeatPassword\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/auth/registration",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"auth",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJvcmxpdWsuaXJ5bmFAZ21haWwuY29tIiwiaWF0IjoxNzUzOTQ4NTYyLCJleHAiOjE3NTM5NDg4NjJ9.2xCYo6HC8uOhYrQQMlyib21uE-hCMJVTqoShLp-PVWmcmG8JO2RM-usspW4tUaG_",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"nikolya@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

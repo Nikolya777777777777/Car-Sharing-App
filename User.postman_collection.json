@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "f7d1aff7-0e86-4a0b-a367-d32134253f3c",
+		"name": "User",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44500511",
+		"_collection_link": "https://mykola-2085682.postman.co/workspace/Mykola's-Workspace~1a7b0300-57ed-43a8-88a7-8178c795b70b/collection/44500511-f7d1aff7-0e86-4a0b-a367-d32134253f3c?action=share&source=collection_link&creator=44500511"
+	},
+	"item": [
+		{
+			"name": "updateUserRole",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NTk0NDYwNSwiZXhwIjoxNzU1OTQ3NjA1fQ.deNDQwQlIKfqOwv7-8d00GSMDhoATa6p7GEkD7xjdoEmZaZJZ8eT_9YDO6V7a5Uu",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roleName\": \"ROLE_CUSTOMER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/users/2/role",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"users",
+						"2",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllInformationAboutUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NTk0NjUwMywiZXhwIjoxNzU1OTQ5NTAzfQ.rzvGh4vVlUQakOPdHUaWVcw-ufDdWG87_gIfB2-i1Gbws4wTV6L-YanD-Wr6rCLc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/api/users/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"users",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateInformationAboutUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NTk0NjUwMywiZXhwIjoxNzU1OTQ5NTAzfQ.rzvGh4vVlUQakOPdHUaWVcw-ufDdWG87_gIfB2-i1Gbws4wTV6L-YanD-Wr6rCLc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"orl@gmail.com\",\r\n    \"password\": \"12345678\",\r\n    \"repeatPassword\": \"12345678\",\r\n    \"firstName\": \"Mykola\",\r\n    \"lastName\": \"Kovbasiuk\",\r\n    \"shippingAddress\": \"European 34\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/users/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"users",
+						"me"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
