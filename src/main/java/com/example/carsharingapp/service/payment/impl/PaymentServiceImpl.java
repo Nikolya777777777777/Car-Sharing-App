@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
     private static final String PAID = "paid";
     private final RentalRepository rentalRepository;
@@ -59,23 +60,6 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentMapper.toResponseDto(payment);
     }
 
-    private BigDecimal calculateAmount(Rental rental, PaymentType type) {
-        if (type == PaymentType.PAYMENT) {
-            long days = Duration.between(rental.getRentalDate(), rental.getReturnDate()).toDays();
-            if (days == 0) {
-                days = 1;
-            }
-            return rental.getCar().getDailyFee().multiply(BigDecimal.valueOf(days));
-        } else {
-            long days = Duration.between(rental.getReturnDate(),
-                    rental.getActualReturnDate()).toDays();
-            if (days == 0) {
-                days = 1;
-            }
-            return rental.getCar().getDailyFee().multiply(BigDecimal.valueOf(days));
-        }
-    }
-
     @Override
     public PaymentStatusResponseDto getPaymentStatus(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId)
@@ -100,5 +84,22 @@ public class PaymentServiceImpl implements PaymentService {
     public Page<PaymentResponseDto> getPaymentsByUserId(Long userId, Pageable pageable) {
         return paymentRepository.findByUserId(userId, pageable)
                 .map(paymentMapper::toResponseDto);
+    }
+
+    private BigDecimal calculateAmount(Rental rental, PaymentType type) {
+        if (type == PaymentType.PAYMENT) {
+            long days = Duration.between(rental.getRentalDate(), rental.getReturnDate()).toDays();
+            if (days == 0) {
+                days = 1;
+            }
+            return rental.getCar().getDailyFee().multiply(BigDecimal.valueOf(days));
+        } else {
+            long days = Duration.between(rental.getReturnDate(),
+                    rental.getActualReturnDate()).toDays();
+            if (days == 0) {
+                days = 1;
+            }
+            return rental.getCar().getDailyFee().multiply(BigDecimal.valueOf(days));
+        }
     }
 }

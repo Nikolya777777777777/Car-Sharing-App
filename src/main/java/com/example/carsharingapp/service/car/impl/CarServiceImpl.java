@@ -9,6 +9,7 @@ import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.car.CarRepository;
 import com.example.carsharingapp.repository.car.CarSpecificationBuilder;
 import com.example.carsharingapp.service.car.CarService;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
@@ -59,8 +61,10 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void deleteById(Long id) {
-        Car car = carRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Car was not found with id: " + id));
-        carRepository.deleteById(id);
+        if (carRepository.existsById(id)) {
+            carRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Car was not found with id: " + id);
+        }
     }
 }

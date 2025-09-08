@@ -1,0 +1,107 @@
+{
+	"info": {
+		"_postman_id": "757c7e4c-91b2-463e-9bc3-813244f962bd",
+		"name": "Payment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44500511",
+		"_collection_link": "https://mykola-2085682.postman.co/workspace/Mykola's-Workspace~1a7b0300-57ed-43a8-88a7-8178c795b70b/collection/44500511-757c7e4c-91b2-463e-9bc3-813244f962bd?action=share&source=collection_link&creator=44500511"
+	},
+	"item": [
+		{
+			"name": "payForTheRent",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuaWtvbHlhLmNyQGdtYWlsLmNvbSIsImlhdCI6MTc1NjM4NjYzMCwiZXhwIjoxNzU2Mzg5NjMwfQ.7g_rUXhDi3S0xzo7710oJZLX8QDv-I64Ftie8ko01YDFvvXTsoarzTUguEZs9zRU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rentalDate\": \"2025-08-25T14:30:00\",\r\n    \"returnDate\": \"2025-08-26T14:30:00\"\r\n    \"actualReturnDate\": null,\r\n    \"carId\": 1,\r\n    \"userId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/payment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllUserPayments",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "getSuccessPayment",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/api/payment/success/session_id=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"payment",
+						"success",
+						"session_id=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCanceledPayment",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/api/payment/cancel?sessionId=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"payment",
+						"cancel"
+					],
+					"query": [
+						{
+							"key": "sessionId",
+							"value": "cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

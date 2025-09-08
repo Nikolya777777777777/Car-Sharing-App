@@ -4,6 +4,7 @@ import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.model.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,10 +34,10 @@ public class Rental {
     @Column(nullable = false)
     private LocalDateTime returnDate;
     private LocalDateTime actualReturnDate;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @Column(nullable = false)
