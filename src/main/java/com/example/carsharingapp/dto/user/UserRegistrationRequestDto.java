@@ -4,10 +4,12 @@ import com.example.carsharingapp.validation.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 @PasswordMatches
 @Data
+@Accessors(chain = true)
 public class UserRegistrationRequestDto {
     @NotBlank
     @Email

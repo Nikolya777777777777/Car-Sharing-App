@@ -46,9 +46,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto updateRoleForUser(Long id, UpdateRoleRequestDto requestDto) {
-        Role role = roleRepository.findByName(requestDto.role())
+        Role role = roleRepository.findByName(requestDto.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("Role named: "
-                        + requestDto.role() + " was not found"));
+                        + requestDto.getRole() + " was not found"));
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with id: "
                         + id + " was not found"));
