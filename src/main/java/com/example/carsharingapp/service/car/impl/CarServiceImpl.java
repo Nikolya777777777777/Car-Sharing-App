@@ -30,6 +30,8 @@ public class CarServiceImpl implements CarService {
         Optional<Car> car = carRepository.findByModel(requestDto.getModel());
         if (car.isPresent()) {
             requestDto.setInventory(car.get().getInventory() + requestDto.getInventory());
+        } else {
+            throw new RuntimeException("There is no car with the given model " +  requestDto.getModel());
         }
         return carMapper.toResponseDto(carRepository.save(carMapper.toModel(requestDto)));
     }
