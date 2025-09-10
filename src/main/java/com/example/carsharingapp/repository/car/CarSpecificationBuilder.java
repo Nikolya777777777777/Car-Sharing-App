@@ -21,30 +21,30 @@ public class CarSpecificationBuilder implements SpecificationBuilder<Car> {
     @Override
     public Specification<Car> build(CarSearchParamsDto searchParameters) {
         Specification<Car> spec = null;
-        if (searchParameters.models() != null && searchParameters.models().length > 0) {
+        if (searchParameters.getModels() != null && searchParameters.getModels().length > 0) {
             Specification<Car> modelSpec = carSpecificationProviderManager
                     .getSpecificationProvider(MODEL_KEY)
-                    .getSpecification(searchParameters.models());
+                    .getSpecification(searchParameters.getModels());
             spec = spec == null ? modelSpec : spec.and(modelSpec);
         }
-        if (searchParameters.brands() != null && searchParameters.brands().length > 0) {
+        if (searchParameters.getBrands() != null && searchParameters.getBrands().length > 0) {
             Specification<Car> brandSpec = carSpecificationProviderManager
                     .getSpecificationProvider(BRAND_KEY)
-                    .getSpecification(searchParameters.brands());
+                    .getSpecification(searchParameters.getBrands());
             spec = spec == null ? brandSpec : spec.and(brandSpec);
         }
-        if (searchParameters.type() != null) {
+        if (searchParameters.getType() != null) {
             Specification<Car> typeSpecification = carSpecificationProviderManager
                     .getSpecificationProvider(TYPE_KEY)
-                    .getSpecification(new String[]{String.valueOf(searchParameters.type())});
+                    .getSpecification(new String[]{String.valueOf(searchParameters.getType())});
             spec = spec == null ? typeSpecification : spec.and(typeSpecification);
 
         }
 
-        if (searchParameters.dailyFee() != null) {
+        if (searchParameters.getDailyFee() != null) {
             Specification<Car> dailyFeeSpecification = carSpecificationProviderManager
                     .getSpecificationProvider(DAILY_FEE_KEY)
-                    .getSpecification(new String[]{String.valueOf(searchParameters.dailyFee())});
+                    .getSpecification(new String[]{String.valueOf(searchParameters.getDailyFee())});
             spec = spec == null ? dailyFeeSpecification : spec.and(dailyFeeSpecification);
         }
         return spec;

@@ -2,11 +2,13 @@ package com.example.carsharingapp.service;
 
 import com.example.carsharingapp.dto.car.CarRequestDto;
 import com.example.carsharingapp.dto.car.CarResponseDto;
+import com.example.carsharingapp.dto.car.CarSearchParamsDto;
 import com.example.carsharingapp.mapper.car.CarMapper;
 import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.model.enums.Type;
 import com.example.carsharingapp.repository.car.CarRepository;
 import com.example.carsharingapp.repository.car.CarSpecificationBuilder;
+import com.example.carsharingapp.repository.car.CarSpecificationProviderManager;
 import com.example.carsharingapp.service.car.impl.CarServiceImpl;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +21,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.jpa.domain.Specification;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.carsharingapp.repository.car.spec.DailyFeeSpecificationProvider.DAILY_FEE_KEY;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -36,6 +39,8 @@ public class CarServiceTest {
     private CarMapper carMapper;
     @Mock
     private CarSpecificationBuilder carSpecificationBuilder;
+    @Mock
+    private CarSpecificationProviderManager carSpecificationProviderManager;
     @InjectMocks
     private CarServiceImpl carService;
 
@@ -108,9 +113,9 @@ public class CarServiceTest {
 
     @Test
     @DisplayName("""
-            Get all cars
+            Search cars by params
             """)
-    public void getAllCars_WithValidRequest_ReturnPageOfCarResponseDto() {
+    public void searchCarsByParams_WithValidRequest_ReturnPageOfCarResponseDto() {
         Pageable pageable = PageRequest.of(0, 10);
 
         Car car1 = new Car()
@@ -120,13 +125,6 @@ public class CarServiceTest {
                 .setType(Type.SEDAN)
                 .setInventory(50);
 
-        Car car2 = new Car()
-                .setBrand("Mercedes")
-                .setModel("S-class")
-                .setDailyFee(BigDecimal.valueOf(800))
-                .setType(Type.SEDAN)
-                .setInventory(20);
-
         CarResponseDto carResponseDto1 = new CarResponseDto()
                 .setId(car1.getId())
                 .setBrand("Audi")
@@ -135,27 +133,23 @@ public class CarServiceTest {
                 .setType(Type.SEDAN)
                 .setInventory(50);
 
-        CarResponseDto carResponseDto2 = new CarResponseDto()
-                .setId(car2.getId())
-                .setBrand("Mercedes")
-                .setModel("S-class")
-                .setDailyFee(BigDecimal.valueOf(800))
-                .setType(Type.SEDAN)
-                .setInventory(20);
+        CarSearchParamsDto carSearchParamsDto = new CarSearchParamsDto()
+                .setModels(new String[]{"A5"});
 
-        Page<Car> pageOfAllCars = new PageImpl<>(List.of(car1, car2),  pageable, 2);
-        Page<CarResponseDto> pageOfAllCarsResponseDto = new PageImpl<>(List.of(carResponseDto1, carResponseDto2),  pageable, 2);
+        Page<Car> pageOfAllCars = new PageImpl<>(List.of(car1),  pageable, 1);
+        Page<CarResponseDto> pageOfAllCarsResponseDto = new PageImpl<>(List.of(carResponseDto1),  pageable, 1);
+        Specification<Car> carSpecification = carSpecificationBuilder.build(carSearchParamsDto);
 
+        when(carSpecificationBuilder.build(carSearchParamsDto)).thenReturn(carSpecification);
         when(carRepository.findAll(pageable)).thenReturn(pageOfAllCars);
         when(carMapper.toResponseDto(car1)).thenReturn(carResponseDto1);
-        when(carMapper.toResponseDto(car2)).thenReturn(carResponseDto2);
 
-        Page<CarResponseDto> result = carService.getAllCars(pageable);
+        Page<CarResponseDto> result = carService.searchCarsByParams(carSearchParamsDto, pageable);
 
         assertThat(EqualsBuilder.reflectionEquals(result, pageOfAllCarsResponseDto));
+        verify(carSpecificationBuilder).build(carSearchParamsDto);
         verify(carRepository).findAll(pageable);
         verify(carMapper).toResponseDto(car1);
-        verify(carMapper).toResponseDto(car2);
         verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
     }
 

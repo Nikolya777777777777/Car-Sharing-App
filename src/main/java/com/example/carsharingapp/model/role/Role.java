@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Setter
 @Table(name = "roles")
 @AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 public class Role implements GrantedAuthority {
     @Id
