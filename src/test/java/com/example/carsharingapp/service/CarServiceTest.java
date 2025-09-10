@@ -3,6 +3,7 @@ package com.example.carsharingapp.service;
 import com.example.carsharingapp.dto.car.CarRequestDto;
 import com.example.carsharingapp.dto.car.CarResponseDto;
 import com.example.carsharingapp.dto.car.CarSearchParamsDto;
+import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.car.CarMapper;
 import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.model.enums.Type;
@@ -141,15 +142,47 @@ public class CarServiceTest {
         Specification<Car> carSpecification = carSpecificationBuilder.build(carSearchParamsDto);
 
         when(carSpecificationBuilder.build(carSearchParamsDto)).thenReturn(carSpecification);
-        when(carRepository.findAll(pageable)).thenReturn(pageOfAllCars);
+        when(carRepository.findAll(carSpecification, pageable)).thenReturn(pageOfAllCars);
         when(carMapper.toResponseDto(car1)).thenReturn(carResponseDto1);
 
         Page<CarResponseDto> result = carService.searchCarsByParams(carSearchParamsDto, pageable);
 
         assertThat(EqualsBuilder.reflectionEquals(result, pageOfAllCarsResponseDto));
-        verify(carSpecificationBuilder).build(carSearchParamsDto);
-        verify(carRepository).findAll(pageable);
+        verify(carSpecificationBuilder, times(2)).build(carSearchParamsDto);
+        verify(carRepository).findAll(carSpecification, pageable);
         verify(carMapper).toResponseDto(car1);
+        verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
+    }
+
+    @Test
+    @DisplayName("""
+            Delete car by id
+            """)
+    public void deleteCar_ById_ReturnNothing() {
+        Long carId = 1L;
+
+        when(carRepository.existsById(carId)).thenReturn(true);
+        carService.deleteById(carId);
+
+        verify(carRepository).existsById(carId);
+        verify(carRepository).deleteById(carId);
+        verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
+    }
+
+    @Test
+    @DisplayName("""
+            Delete car by invalid id
+            """)
+    public void deleteCar_ByInvalidId_ShouldThrowException() {
+        Long carId = 1L;
+
+        when(carRepository.existsById(carId)).thenReturn(false);
+        Exception exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.deleteById(carId));
+
+        assertThat(exception.getMessage()).isEqualTo("Car was not found with id: " + carId);
+        verify(carRepository).existsById(carId);
         verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
     }
 
