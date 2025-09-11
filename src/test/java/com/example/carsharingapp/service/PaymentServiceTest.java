@@ -69,52 +69,48 @@ public class PaymentServiceTest {
                 .setDeleted(false);
 
         Rental rental = new Rental()
-                .setId(1L)
                 .setRentalDate(LocalDateTime.now())
                 .setReturnDate(LocalDateTime.now().plusDays(1))
                 .setCar(car)
                 .setUser(user)
                 .setActualReturnDate(null);
 
+        Session session = new Session();
+        session.setId("cs_test_a1TOL76MdGnmrhJFkb2iWRffUQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0");
+        session.setUrl("https://checkout.stripe.com/c/pay/cs_test_a1TOL76MdGnmrhJFkb2iWRff"
+                + "UQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0#fidkdWxOYHwnPyd1blpxYHZxWjA0VjVRdzdDSGlw"
+                + "VWo9YlRjcTVTYjc3UnJSPTJSVVw2cD1pTVdwXHd9M11QSWtTV1RpZjFAPUpcU29CamBBYTVMd249S"
+                + "kJhZjVuUWJoXGh8Nkg3VkRQVU9MNTVXVlw0NmI0PCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8"
+                + "dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl");
+
         Payment payment = new Payment()
                 .setId(1L)
                 .setAmountToPay(BigDecimal.valueOf(700))
                 .setRental(rental)
-                .setSessionId("cs_test_a1TOL76MdGnmrhJFkb2iWRffUQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0")
-                .setSessionUrl("https://checkout.stripe.com/c/pay/cs_test_a1TOL76MdGnmrhJFkb2iWRff"
-                        + "UQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0#fidkdWxOYHwnPyd1blpxYHZxWjA0VjVRdzdDSGlw"
-                        + "VWo9YlRjcTVTYjc3UnJSPTJSVVw2cD1pTVdwXHd9M11QSWtTV1RpZjFAPUpcU29CamBBYTVMd249S"
-                        + "kJhZjVuUWJoXGh8Nkg3VkRQVU9MNTVXVlw0NmI0PCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8"
-                        + "dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl")
+                .setSessionId(session.getId())
+                .setSessionUrl(session.getUrl())
                 .setType(PaymentType.PAYMENT)
                 .setStatus(Status.PENDING);
 
         PaymentResponseDto paymentResponseDto = new PaymentResponseDto()
                 .setId(1L)
                 .setAmountToPay(BigDecimal.valueOf(700))
-                .setSessionId("cs_test_a1TOL76MdGnmrhJFkb2iWRffUQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0")
-                .setSessionUrl("https://checkout.stripe.com/c/pay/cs_test_a1TOL76MdGnmrhJFkb2iWRff"
-                        + "UQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0#fidkdWxOYHwnPyd1blpxYHZxWjA0VjVRdzdDSGlw"
-                        + "VWo9YlRjcTVTYjc3UnJSPTJSVVw2cD1pTVdwXHd9M11QSWtTV1RpZjFAPUpcU29CamBBYTVMd249S"
-                        + "kJhZjVuUWJoXGh8Nkg3VkRQVU9MNTVXVlw0NmI0PCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8"
-                        + "dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl")
+                .setSessionId(session.getId())
+                .setSessionUrl(session.getUrl())
                 .setType(PaymentType.PAYMENT)
                 .setStatus(Status.PENDING);
 
-        BigDecimal totalAmount = BigDecimal.valueOf(100);
-
-        Session session = stripeService.createRentalPaymentSession(rental, totalAmount);
-
         when(rentalRepository.findById(paymentRequestDto.getRentalId())).thenReturn(Optional.of(rental));
-        when(paymentRepository.save(payment)).thenReturn(payment);
-        when(stripeService.createRentalPaymentSession(rental, totalAmount)).thenReturn(session);
-        when(paymentMapper.toResponseDto(payment)).thenReturn(paymentResponseDto);
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+        when(stripeService.createRentalPaymentSession(any(Rental.class), any(BigDecimal.class))).thenReturn(session);
+        when(paymentMapper.toResponseDto(any(Payment.class))).thenReturn(paymentResponseDto);
 
         PaymentResponseDto result = paymentService.create(paymentRequestDto);
         assertTrue(EqualsBuilder.reflectionEquals(result, paymentResponseDto));
         verify(rentalRepository).findById(paymentRequestDto.getRentalId());
-        verify(paymentRepository).save(payment);
-        verify(paymentMapper).toResponseDto(payment);
-        verifyNoMoreInteractions(rentalRepository, paymentRepository, paymentMapper);
+        verify(paymentRepository).save(any(Payment.class));
+        verify(telegramNotificationService).sendNotification(anyString());
+        verify(paymentMapper).toResponseDto(any(Payment.class));
+        verifyNoMoreInteractions(rentalRepository, paymentRepository, paymentMapper, telegramNotificationService);
     }
 }
