@@ -1,10 +1,13 @@
 package com.example.carsharingapp.service;
 
 import com.example.carsharingapp.dto.payment.PaymentRequestDto;
+import com.example.carsharingapp.dto.payment.PaymentResponseDto;
 import com.example.carsharingapp.mapper.payment.PaymentMapper;
 import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.model.enums.PaymentType;
+import com.example.carsharingapp.model.enums.Status;
 import com.example.carsharingapp.model.enums.Type;
+import com.example.carsharingapp.model.payment.Payment;
 import com.example.carsharingapp.model.rental.Rental;
 import com.example.carsharingapp.model.user.User;
 import com.example.carsharingapp.repository.payment.PaymentRepository;
@@ -12,6 +15,7 @@ import com.example.carsharingapp.repository.rental.RentalRepository;
 import com.example.carsharingapp.service.bot.TelegramNotificationService;
 import com.example.carsharingapp.service.payment.impl.PaymentServiceImpl;
 import com.example.carsharingapp.service.stripe.StripeService;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +27,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PaymentServiceTest {
@@ -70,11 +76,45 @@ public class PaymentServiceTest {
                 .setUser(user)
                 .setActualReturnDate(null);
 
-        //Session session = new Session().se;
+        Payment payment = new Payment()
+                .setId(1L)
+                .setAmountToPay(BigDecimal.valueOf(700))
+                .setRental(rental)
+                .setSessionId("cs_test_a1TOL76MdGnmrhJFkb2iWRffUQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0")
+                .setSessionUrl("https://checkout.stripe.com/c/pay/cs_test_a1TOL76MdGnmrhJFkb2iWRff"
+                        + "UQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0#fidkdWxOYHwnPyd1blpxYHZxWjA0VjVRdzdDSGlw"
+                        + "VWo9YlRjcTVTYjc3UnJSPTJSVVw2cD1pTVdwXHd9M11QSWtTV1RpZjFAPUpcU29CamBBYTVMd249S"
+                        + "kJhZjVuUWJoXGh8Nkg3VkRQVU9MNTVXVlw0NmI0PCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8"
+                        + "dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl")
+                .setType(PaymentType.PAYMENT)
+                .setStatus(Status.PENDING);
+
+        PaymentResponseDto paymentResponseDto = new PaymentResponseDto()
+                .setId(1L)
+                .setAmountToPay(BigDecimal.valueOf(700))
+                .setSessionId("cs_test_a1TOL76MdGnmrhJFkb2iWRffUQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0")
+                .setSessionUrl("https://checkout.stripe.com/c/pay/cs_test_a1TOL76MdGnmrhJFkb2iWRff"
+                        + "UQ0axHeXWvsTb4HaSUhfwNk93wuaknsBo0#fidkdWxOYHwnPyd1blpxYHZxWjA0VjVRdzdDSGlw"
+                        + "VWo9YlRjcTVTYjc3UnJSPTJSVVw2cD1pTVdwXHd9M11QSWtTV1RpZjFAPUpcU29CamBBYTVMd249S"
+                        + "kJhZjVuUWJoXGh8Nkg3VkRQVU9MNTVXVlw0NmI0PCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8"
+                        + "dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl")
+                .setType(PaymentType.PAYMENT)
+                .setStatus(Status.PENDING);
 
         BigDecimal totalAmount = BigDecimal.valueOf(100);
 
+        Session session = stripeService.createRentalPaymentSession(rental, totalAmount);
+
         when(rentalRepository.findById(paymentRequestDto.getRentalId())).thenReturn(Optional.of(rental));
-        when(stripeService.createRentalPaymentSession(rental, totalAmount)).thenReturn();
+        when(paymentRepository.save(payment)).thenReturn(payment);
+        when(stripeService.createRentalPaymentSession(rental, totalAmount)).thenReturn(session);
+        when(paymentMapper.toResponseDto(payment)).thenReturn(paymentResponseDto);
+
+        PaymentResponseDto result = paymentService.create(paymentRequestDto);
+        assertTrue(EqualsBuilder.reflectionEquals(result, paymentResponseDto));
+        verify(rentalRepository).findById(paymentRequestDto.getRentalId());
+        verify(paymentRepository).save(payment);
+        verify(paymentMapper).toResponseDto(payment);
+        verifyNoMoreInteractions(rentalRepository, paymentRepository, paymentMapper);
     }
 }
