@@ -1,4 +1,4 @@
-package com.example.carsharingapp.service;
+package com.example.carsharingapp.service.user;
 
 import com.example.carsharingapp.dto.user.UpdateRoleRequestDto;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
@@ -8,7 +8,7 @@ import com.example.carsharingapp.exception.RegistrationException;
 import com.example.carsharingapp.mapper.user.UserMapper;
 import com.example.carsharingapp.model.role.Role;
 import com.example.carsharingapp.model.user.User;
-import com.example.carsharingapp.model.user.UserServiceImpl;
+import com.example.carsharingapp.service.user.impl.UserServiceImpl;
 import com.example.carsharingapp.repository.role.RoleRepository;
 import com.example.carsharingapp.repository.user.UserRepository;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -185,7 +185,7 @@ public class UserServiceTest {
     @DisplayName("""
             Update user's role, but with invalid user's id
             """)
-    public void updateUser_WithInvalidUser_ShouldThrowEntityNotFoundException() {
+    public void updateUser_WithInvalidId_ShouldThrowEntityNotFoundException() {
         Long id = 1L;
 
         UpdateRoleRequestDto updateRoleRequestDto = new UpdateRoleRequestDto()

@@ -1,4 +1,4 @@
-package com.example.carsharingapp.service;
+package com.example.carsharingapp.service.payment;
 
 import com.example.carsharingapp.dto.payment.PaymentRequestDto;
 import com.example.carsharingapp.dto.payment.PaymentResponseDto;
@@ -29,7 +29,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
