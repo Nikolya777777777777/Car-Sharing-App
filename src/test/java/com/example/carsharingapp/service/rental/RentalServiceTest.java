@@ -182,4 +182,133 @@ public class RentalServiceTest {
         verify(rentalMapper).toResponseDto(rental.setId(1L));
         verifyNoMoreInteractions(carRepository, rentalRepository, rentalMapper, telegramNotificationService);
     }
+
+    @Test
+    @DisplayName("""
+            Return car with not available active Rentals
+            """)
+    public void returnCar_WithNotActiveRentals_ShouldThrowException() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        User user = new User()
+                .setId(1L)
+                .setEmail("nikolya.cr@gmail.com")
+                .setFirstName("Mykola")
+                .setLastName("Kovbasiuk")
+                .setDeleted(false);
+
+        String expected = "Active rentals not found for userId: " + user.getId();
+
+        RentalReturnDto rentalReturnDto = new RentalReturnDto()
+                .setCarIds(List.of(1L));
+
+        when(rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId())).thenReturn(List.of());
+
+        Exception  actual = assertThrows(
+                EntityNotFoundException.class,
+                () -> rentalService.returnCar(user.getId(), rentalReturnDto, pageable));
+
+        assertThat(actual.getMessage()).isEqualTo(expected);
+        verify(rentalRepository).findByUserIdAndActualReturnDateIsNull(user.getId());
+        verifyNoMoreInteractions(carRepository, rentalRepository, rentalMapper, telegramNotificationService);
+    }
+
+    @Test
+    @DisplayName("""
+            Return car with not available Cars
+            """)
+    public void returnCar_WithNotActiveCars_ShouldThrowException() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        User user = new User()
+                .setId(1L)
+                .setEmail("nikolya.cr@gmail.com")
+                .setFirstName("Mykola")
+                .setLastName("Kovbasiuk")
+                .setDeleted(false);
+
+        Car car = new Car()
+                .setId(1L)
+                .setBrand("Audi")
+                .setModel("A5")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        Rental rental = new Rental()
+                .setCar(car)
+                .setActualReturnDate(null)
+                .setReturnDate(LocalDateTime.now().plusDays(1))
+                .setRentalDate(LocalDateTime.now())
+                .setUser(user);
+
+        String expected = "Cars not found for userId: " + user.getId();
+
+        RentalReturnDto rentalReturnDto = new RentalReturnDto()
+                .setCarIds(List.of());
+
+        when(rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId())).thenReturn(List.of(rental));
+
+        Exception  actual = assertThrows(
+                EntityNotFoundException.class,
+                () -> rentalService.returnCar(user.getId(), rentalReturnDto, pageable));
+
+        assertThat(actual.getMessage()).isEqualTo(expected);
+        verify(rentalRepository).findByUserIdAndActualReturnDateIsNull(user.getId());
+        verifyNoMoreInteractions(carRepository, rentalRepository, rentalMapper, telegramNotificationService);
+    }
+
+    @Test
+    @DisplayName("""
+            Return user's rentals
+            """)
+    public void returnUserRentals_WithValidRequestBody_PageOfRentalResponseDto() {
+        Car car = new Car()
+                .setId(1L)
+                .setBrand("Audi")
+                .setModel("A5")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        User user = new User()
+                .setId(1L)
+                .setEmail("nikolya.cr@gmail.com")
+                .setFirstName("Mykola")
+                .setLastName("Kovbasiuk")
+                .setDeleted(false);
+
+        Rental rental = new Rental()
+                .setCar(car)
+                .setActualReturnDate(null)
+                .setReturnDate(LocalDateTime.now().plusDays(1))
+                .setRentalDate(LocalDateTime.now())
+                .setUser(user);
+
+        RentalReturnDto rentalReturnDto = new RentalReturnDto()
+                .setCarIds(List.of(1L));
+
+        RentalResponseDto rentalResponseDto = new RentalResponseDto()
+                .setId(1L)
+                .setRentalDate(LocalDateTime.now())
+                .setActualReturnDate(LocalDateTime.now().plusDays(1))
+                .setReturnDate(LocalDateTime.now().plusDays(1))
+                .setCarId(1L)
+                .setUserId(user.getId());
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<RentalResponseDto> expected = new PageImpl<>(List.of(rentalResponseDto), pageable, 1);
+
+        when(rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId())).thenReturn(List.of(rental));
+        when(rentalRepository.saveAll(List.of(rental))).thenReturn(List.of(rental.setId(1L)));
+        when(rentalMapper.toResponseDto(rental.setId(1L))).thenReturn(rentalResponseDto);
+
+        Page<RentalResponseDto> actual = rentalService.returnCar(user.getId(), rentalReturnDto, pageable);
+        assertTrue(EqualsBuilder.reflectionEquals(expected,actual));
+        verify(rentalRepository).findByUserIdAndActualReturnDateIsNull(user.getId());
+        verify(rentalRepository).saveAll(List.of(rental));
+        verify(telegramNotificationService).sendNotification(anyString());
+        verify(rentalMapper).toResponseDto(rental.setId(1L));
+        verifyNoMoreInteractions(carRepository, rentalRepository, rentalMapper, telegramNotificationService);
+    }
 }
