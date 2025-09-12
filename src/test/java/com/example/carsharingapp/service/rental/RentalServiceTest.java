@@ -1,9 +1,6 @@
 package com.example.carsharingapp.service.rental;
 
-import com.example.carsharingapp.dto.rental.RentalRequestDto;
-import com.example.carsharingapp.dto.rental.RentalResponseDto;
-import com.example.carsharingapp.dto.rental.RentalResponseDtoWithoutActualReturnDate;
-import com.example.carsharingapp.dto.rental.RentalReturnDto;
+import com.example.carsharingapp.dto.rental.*;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.mapper.rental.RentalMapper;
 import com.example.carsharingapp.model.car.Car;
@@ -263,6 +260,10 @@ public class RentalServiceTest {
             Return user's rentals
             """)
     public void returnUserRentals_WithValidRequestBody_PageOfRentalResponseDto() {
+        Pageable pageable = PageRequest.of(0, 10);
+        RentalActiveOrNotActiveRequestDto requestDto = new RentalActiveOrNotActiveRequestDto();
+        requestDto.setActive(true);
+
         Car car = new Car()
                 .setId(1L)
                 .setBrand("Audi")
