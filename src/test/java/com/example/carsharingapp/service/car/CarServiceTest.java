@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,6 +114,60 @@ public class CarServiceTest {
 
     @Test
     @DisplayName("""
+            Get all cars
+            """)
+    public void getAllCars_WithPageable_ReturnPageOfCarResponseDto() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Car car1 = new Car()
+                .setBrand("Audi")
+                .setModel("A5")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        CarResponseDto carResponseDto1 = new CarResponseDto()
+                .setId(car1.getId())
+                .setBrand("Audi")
+                .setModel("A5")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        Car car2 = new Car()
+                .setBrand("Mercedes")
+                .setModel("S-class")
+                .setDailyFee(BigDecimal.valueOf(800))
+                .setType(Type.SEDAN)
+                .setInventory(70);
+
+        CarResponseDto carResponseDto2 = new CarResponseDto()
+                .setId(car2.getId())
+                .setBrand("Mercedes")
+                .setModel("S-class")
+                .setDailyFee(BigDecimal.valueOf(800))
+                .setType(Type.SEDAN)
+                .setInventory(70);
+
+        Page<Car> pageOfAllCars = new PageImpl<>(List.of(car1, car2),  pageable, 2);
+        Page<CarResponseDto> expected = new PageImpl<>(List.of(carResponseDto1, carResponseDto2),  pageable, 2);
+
+        when(carRepository.findAll(pageable)).thenReturn(pageOfAllCars);
+        when(carMapper.toResponseDto(car1)).thenReturn(carResponseDto1);
+        when(carMapper.toResponseDto(car2)).thenReturn(carResponseDto2);
+
+        Page<CarResponseDto> result = carService.getAllCars(pageable);
+
+        assertTrue(EqualsBuilder.reflectionEquals(result, expected));
+        verify(carRepository).findAll(pageable);
+        verify(carMapper).toResponseDto(car2);
+        verify(carMapper).toResponseDto(car1);
+        verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
+    }
+
+
+    @Test
+    @DisplayName("""
             Search cars by params
             """)
     public void searchCarsByParams_WithValidRequest_ReturnPageOfCarResponseDto() {
@@ -150,6 +205,85 @@ public class CarServiceTest {
         verify(carSpecificationBuilder, times(2)).build(carSearchParamsDto);
         verify(carRepository).findAll(carSpecification, pageable);
         verify(carMapper).toResponseDto(car1);
+        verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
+    }
+
+    @Test
+    @DisplayName("""
+            Update car by request body
+            """)
+    public void updateCar_ByRequestBody_ReturnCarResponseDto() {
+        Car car = new Car()
+                .setId(1L)
+                .setBrand("Audi")
+                .setModel("A5")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        CarResponseDto expected = new CarResponseDto()
+                .setId(car.getId())
+                .setBrand("Mercedes")
+                .setModel("S-class")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        Car updatedCar = new Car()
+                .setId(car.getId())
+                .setBrand("Mercedes")
+                .setModel("S-class")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        CarRequestDto carRequestDto = new CarRequestDto()
+                .setBrand("Mercedes")
+                .setModel("S-class")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        when(carRepository.findById(car.getId())).thenReturn(Optional.of(car));
+        when(carRepository.findByModel(carRequestDto.getModel())).thenReturn(Optional.empty());
+        when(carMapper.updateCar(car, carRequestDto)).thenReturn(updatedCar);
+        when(carRepository.save(updatedCar)).thenReturn(updatedCar);
+        when(carMapper.toResponseDto(updatedCar)).thenReturn(expected);
+
+        CarResponseDto actual = carService.update(car.getId(),  carRequestDto);
+
+        assertTrue(EqualsBuilder.reflectionEquals(actual, expected));
+        verify(carRepository).findById(car.getId());
+        verify(carRepository).findByModel(carRequestDto.getModel());
+        verify(carMapper).updateCar(car, carRequestDto);
+        verify(carRepository).save(updatedCar);
+        verify(carMapper).toResponseDto(updatedCar);
+        verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
+    }
+
+    @Test
+    @DisplayName("""
+            Update car by invalid id
+            """)
+    public void updateCar_ByInvalidId_ShouldThrowException() {
+        Long carId = 1L;
+
+        CarRequestDto carRequestDto = new CarRequestDto()
+                .setBrand("Mercedes")
+                .setModel("S-class")
+                .setDailyFee(BigDecimal.valueOf(700))
+                .setType(Type.SEDAN)
+                .setInventory(50);
+
+        String expected = "Car was not found with id: " + carId;
+        when(carRepository.findById(carId)).thenReturn(Optional.empty());
+
+        Exception actual = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.update(carId, carRequestDto));
+
+        assertThat(actual.getMessage()).isEqualTo(expected);
+        verify(carRepository).findById(carId);
         verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
     }
 
