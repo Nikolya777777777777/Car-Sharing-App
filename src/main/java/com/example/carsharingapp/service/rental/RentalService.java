@@ -18,5 +18,5 @@ public interface RentalService {
     Page<RentalDeciderDto> returnUserRentals(Long userId, Pageable pageable,
                                              RentalActiveOrNotActiveRequestDto requestDto);
 
-    RentalDeciderDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId, Pageable pageable);
+    RentalDeciderDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId);
 }

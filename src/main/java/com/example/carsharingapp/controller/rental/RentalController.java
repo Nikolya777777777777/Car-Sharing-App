@@ -89,7 +89,7 @@ public class RentalController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public RentalDeciderDto getRentalByUserIdAndRentalId(@AuthenticationPrincipal User user,
-                                                         Pageable pageable, @PathVariable Long id) {
-        return rentalService.returnRentalByRentalIdAndUserId(user.getId(), id, pageable);
+                                                         @PathVariable Long id) {
+        return rentalService.returnRentalByRentalIdAndUserId(user.getId(), id);
     }
 }
