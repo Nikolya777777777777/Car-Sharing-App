@@ -9,12 +9,14 @@ import com.example.carsharingapp.dto.car.CarSearchParamsDto;
 import com.example.carsharingapp.model.car.Car;
 import com.example.carsharingapp.repository.SpecificationBuilder;
 import com.example.carsharingapp.repository.SpecificationProviderManager;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 public class CarSpecificationBuilder implements SpecificationBuilder<Car> {
     private final SpecificationProviderManager<Car> carSpecificationProviderManager;
 
