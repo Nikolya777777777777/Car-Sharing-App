@@ -40,8 +40,6 @@ public class CarServiceTest {
     private CarMapper carMapper;
     @Mock
     private CarSpecificationBuilder carSpecificationBuilder;
-    @Mock
-    private CarSpecificationProviderManager carSpecificationProviderManager;
     @InjectMocks
     private CarServiceImpl carService;
 
