@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(chain=true)
+@Accessors(chain = true)
 public class PaymentStatusResponseDto {
     private Status status;
 }

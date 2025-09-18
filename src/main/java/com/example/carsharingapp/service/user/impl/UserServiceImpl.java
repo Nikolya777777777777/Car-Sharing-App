@@ -11,10 +11,9 @@ import com.example.carsharingapp.model.role.Role;
 import com.example.carsharingapp.model.user.User;
 import com.example.carsharingapp.repository.role.RoleRepository;
 import com.example.carsharingapp.repository.user.UserRepository;
+import com.example.carsharingapp.service.user.UserService;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.example.carsharingapp.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain=true)
+@Accessors(chain = true)
 public class RentalResponseDtoWithoutActualReturnDate extends RentalDeciderDto {
     private Long id;
     private LocalDateTime rentalDate;
