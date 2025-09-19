@@ -89,7 +89,7 @@ public class CarControllerTest {
             """)
     @Sql(scripts = {
             "classpath:database/controller/car/add/add-two-cars-to-cars-table.sql",
-    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/controller/car/truncate/truncate-cars-table.sql",
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
