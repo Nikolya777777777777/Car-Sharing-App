@@ -5,12 +5,17 @@ import com.example.carsharingapp.dto.payment.PaymentResponseDto;
 import com.example.carsharingapp.dto.payment.PaymentStatusResponseDto;
 import com.example.carsharingapp.model.enums.PaymentType;
 import com.example.carsharingapp.model.enums.Status;
+import com.example.carsharingapp.service.payment.PaymentService;
+import com.example.carsharingapp.service.stripe.StripeService;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -29,17 +34,25 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith(MockitoExtension.class)
 public class PaymentControllerTest {
+    @Mock
+    private StripeService stripeService;
+
     protected static MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @BeforeAll
     static void beforeAll(@Autowired WebApplicationContext applicationContext) {
@@ -141,7 +154,7 @@ public class PaymentControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "manager", roles = {"MANAGER"})
+    @WithMockUser(username = "manager", roles = {"CUSTOMER"})
     @DisplayName("""
             Get success payment status
             """)
@@ -161,8 +174,40 @@ public class PaymentControllerTest {
         PaymentStatusResponseDto expected = new PaymentStatusResponseDto()
                 .setStatus(Status.PAID);
 
-        MvcResult result = mockMvc.perform(get("/payment/success")
-                        .content("sessionId")
+        when(stripeService.checkPaymentStatus("cs_test_a1AgmXxT1oLHjopQArI9JeS28zR2dFsJkQRwwgG3l6MudS6nwLgAh7eZEb")).thenReturn("paid");
+
+        MvcResult result = mockMvc.perform(get("/payment/success?sessionId=cs_test_a1AgmXxT1oLHjopQArI9JeS28zR2dFsJkQRwwgG3l6MudS6nwLgAh7eZEb")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        PaymentStatusResponseDto actual = objectMapper.readValue(result.getResponse().getContentAsString(), PaymentStatusResponseDto.class);
+
+        assertEquals(expected.getStatus(), actual.getStatus());
+    }
+
+    @Test
+    @WithMockUser(username = "manager", roles = {"CUSTOMER"})
+    @DisplayName("""
+            Get cancel payment status
+            """)
+    @Sql(scripts = {
+            "classpath:database/controller/payment/add/add-user-to-users-table.sql",
+            "classpath:database/controller/payment/add/add-car-to-cars-table.sql",
+            "classpath:database/controller/payment/add/add-two-rentals-to-rentals-table.sql",
+            "classpath:database/controller/payment/add/add-two-payments-to-payments-table.sql"
+    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {
+            "classpath:database/controller/payment/truncate/truncate-payment-table.sql",
+            "classpath:database/controller/payment/truncate/truncate-rentals-table.sql",
+            "classpath:database/controller/payment/truncate/truncate-cars-table.sql",
+            "classpath:database/controller/payment/truncate/truncate-users-table.sql"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void getCancelPayment_BySessionId_ReturnPaymentStatusResponseDto() throws Exception {
+        PaymentStatusResponseDto expected = new PaymentStatusResponseDto()
+                .setStatus(Status.PENDING);
+
+        MvcResult result = mockMvc.perform(get("/payment/success?sessionId=cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
