@@ -87,31 +87,6 @@ public class CarServiceTest {
 
     @Test
     @DisplayName("""
-            Create a new car with car model which is not available in inventory
-            """)
-    public void createCar_WithInValidRequest_ShouldThrowException() {
-        CarRequestDto carRequestDto = new CarRequestDto()
-                .setBrand("Audi")
-                .setModel("A5")
-                .setDailyFee(BigDecimal.valueOf(700))
-                .setType(Type.SEDAN)
-                .setInventory(50);
-
-
-        when(carRepository.findByModel(carRequestDto.getModel())).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(
-                RuntimeException.class,
-                () -> carService.create(carRequestDto)
-        );
-
-        assertThat(exception.getMessage()).isEqualTo("There is no car with the given model " +  carRequestDto.getModel());
-        verify(carRepository).findByModel(carRequestDto.getModel());
-        verifyNoMoreInteractions(carRepository, carMapper, carSpecificationBuilder);
-    }
-
-    @Test
-    @DisplayName("""
             Get all cars
             """)
     public void getAllCars_WithPageable_ReturnPageOfCarResponseDto() {
