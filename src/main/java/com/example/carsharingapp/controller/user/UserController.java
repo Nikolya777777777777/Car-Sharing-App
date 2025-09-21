@@ -4,7 +4,7 @@ import com.example.carsharingapp.dto.user.UpdateRoleRequestDto;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
 import com.example.carsharingapp.dto.user.UserResponseDto;
 import com.example.carsharingapp.model.user.User;
-import com.example.carsharingapp.model.user.UserService;
+import com.example.carsharingapp.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

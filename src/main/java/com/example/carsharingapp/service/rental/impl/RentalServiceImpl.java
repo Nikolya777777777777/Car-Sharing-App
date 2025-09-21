@@ -108,8 +108,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public RentalDeciderDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId,
-                                                            Pageable pageable) {
+    public RentalDeciderDto returnRentalByRentalIdAndUserId(Long userId, Long rentalId) {
         Rental rental = rentalRepository.findByUserIdAndRentalId(userId, rentalId)
                 .orElseThrow(() -> new EntityNotFoundException("Rental was not found with id: "
                         + rentalId));

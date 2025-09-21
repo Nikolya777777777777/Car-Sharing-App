@@ -1,4 +1,4 @@
-package com.example.carsharingapp.model.user;
+package com.example.carsharingapp.service.user.impl;
 
 import com.example.carsharingapp.dto.user.UpdateRoleRequestDto;
 import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
@@ -8,8 +8,10 @@ import com.example.carsharingapp.exception.RegistrationException;
 import com.example.carsharingapp.mapper.user.UserMapper;
 import com.example.carsharingapp.model.enums.RoleName;
 import com.example.carsharingapp.model.role.Role;
+import com.example.carsharingapp.model.user.User;
 import com.example.carsharingapp.repository.role.RoleRepository;
 import com.example.carsharingapp.repository.user.UserRepository;
+import com.example.carsharingapp.service.user.UserService;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +48,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto updateRoleForUser(Long id, UpdateRoleRequestDto requestDto) {
-        Role role = roleRepository.findByName(requestDto.role())
+        Role role = roleRepository.findByName(requestDto.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("Role named: "
-                        + requestDto.role() + " was not found"));
+                        + requestDto.getRole() + " was not found"));
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with id: "
                         + id + " was not found"));

@@ -1,0 +1,4 @@
+INSERT INTO payments(id, status, type, rental_id, session_url, session_id, amount_to_pay)
+VALUES (1, 'PENDING', 'PAYMENT', 1, ' https://checkout.stripe.com/c/pay/cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0#fidkdWxOYHwnPyd1blpxYHZxWjA0VjVRdzdDSGlwVWo9YlRjcTVTYjc3UnJSPTJSVVw2cD1pTVdwXHd9M11QSWtTV1RpZjFAPUpcU29CamBBYTVMd249SkJhZjVuUWJoXGh8Nkg3VkRQVU9MNTVXVlw0NmI0PCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl',
+        'cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0', 700),
+    (2, 'PAID', 'PAYMENT', 2, 'https://checkout.stripe.com/c/pay/cs_test_a1IKNt0COMCX9m9aawNPOGRP10lFH9SvESORSmN1mRD8n5duuWBfw8mNX0#f', 'cs_test_a1AgmXxT1oLHjopQArI9JeS28zR2dFsJkQRwwgG3l6MudS6nwLgAh7eZEb', 700);

@@ -55,7 +55,7 @@ public class RentalController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/return")
     public Page<RentalResponseDto> returnRental(@AuthenticationPrincipal User user, @Valid
                 @RequestBody RentalReturnDto rentalReturnDto, Pageable pageable) {
@@ -89,7 +89,7 @@ public class RentalController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public RentalDeciderDto getRentalByUserIdAndRentalId(@AuthenticationPrincipal User user,
-                                                         Pageable pageable, @PathVariable Long id) {
-        return rentalService.returnRentalByRentalIdAndUserId(user.getId(), id, pageable);
+                                                         @PathVariable Long id) {
+        return rentalService.returnRentalByRentalIdAndUserId(user.getId(), id);
     }
 }
